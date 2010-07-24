@@ -38,13 +38,11 @@ namespace MasterHand
             }
             sb.AppendLine("</table>");
         }
-        private void HTML_Output()
+        private void HTML_Output(DatFile dat)
         {
             string H1 = "<h1>{0}</h1>";
             string H2 = "<h2>{0}</h2>";
             StringBuilder sb = new StringBuilder();
-            string filename = @"W:\melee_hax\dats\Game & Watch\PlGw.dat";
-            DatFile dat = new DatFile(filename);
             //PrettyPrint XD
             sb.AppendFormat(H1,dat.Filename);
             prettyPrint(dat.Header, sb);
@@ -85,7 +83,7 @@ namespace MasterHand
             foreach (SectionHeader sh in datfile.Section2Entries.Values)
                 list.Add(sh);
             DSListBox.ItemsSource = list;
-            HTML_Output();
+            HTML_Output(datfile);
 
         }
     }
