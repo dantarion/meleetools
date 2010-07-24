@@ -14,7 +14,9 @@ namespace MeleeLib
         public Dictionary<String, SectionHeader> Section1Entries { get { return section1s; } }
         public Dictionary<String, SectionHeader> Section2Entries { get { return section2s; } }
         public FTHeader FTHeader { get { return ftheader; } }
-        public List<object> Attributes { get { return attributes; } }
+        public List<Attribute> Attributes { get { return attributes; } }
+        public List<Subaction> Subactions { get { return subactions; } }
+
 
         private byte[] rawheader = new byte[HEADER_LENGTH];
         private byte[] rawdata;
@@ -22,12 +24,12 @@ namespace MeleeLib
         private Dictionary<String, SectionHeader> section1s = new Dictionary<String, SectionHeader>();
         private Dictionary<String, SectionHeader> section2s = new Dictionary<String, SectionHeader>();
         private FTHeader ftheader;
-        private List<object> attributes = new List<object>();
-
+        private List<Attribute> attributes = new List<Attribute>();
+        private List<Subaction> subactions = new List<Subaction>();
         public unsafe DatFile(string filename)
         {
 
-            
+            this.Filename = filename;
             //Load up file
             var stream =  File.OpenRead(filename);
 
@@ -68,22 +70,60 @@ namespace MeleeLib
             //FTHeader
             fixed (byte* ptr = rawdata)
             {
-                uint[] INT_ATTRIBUTES = { 0x58, 0xa4, 0x98, 0x16c };
+                int[] INT_ATTRIBUTES = { 0x58, 0xa4, 0x98, 0x16c };
                 ftheader = *(FTHeader*)(ptr + section1s.Values.First().DataOffset);
                 byte* cur = ftheader.AttributesOffset + ptr;
                 byte* end = ftheader.AttributesOffset2 + ptr;
-                uint i = 0;
+                int i = 0;
                 while (cur < end)
                 {
+                    Attribute attribute = new Attribute();
                     if (!INT_ATTRIBUTES.Contains(i))
-                        attributes.Add((float)*(bfloat*)cur);
+                        attribute.Value = (float)*(bfloat*)cur;
                     else
-                        attributes.Add((uint)*(buint*)cur);
+                        attribute.Value = (uint)*(buint*)cur;
+                    attribute.Offset = i;
+                    attributes.Add(attribute);
                     i += 4;
                     cur += 4;
                 }
-
             }
+            //Subactions
+            fixed (byte* ptr = rawdata)
+            {
+                byte* cur = ftheader.SubactionStart + ptr;
+                byte* end = ftheader.SubactionEnd + ptr;
+                int i = 0;
+                while (cur < end)
+                {
+                    Subaction s = new Subaction();
+                    s.Header = *(SubactionHeader*)(cur);
+                    string str = new String((sbyte*)ptr + s.Header.StringOffset);
+                    if(str.Contains("ACTION_"))
+                        str = str.Substring(str.LastIndexOf("ACTION_")+7).Replace("_figatree","");
+                    if (str == "")
+                        str = "[No name]";
+                    s.Name = str;
+                    s.Index = i;
+                    s.Commands = readScript(ptr + s.Header.ScriptOffset);
+                    Subactions.Add(s);                    
+                    i += 1;
+                    cur += 4*6;
+                }
+            }
+
+        }
+        public unsafe List<ScriptCommand> readScript(byte* ptr)
+        {
+            var list = new List<ScriptCommand>();
+            ScriptCommand sc = ScriptCommand.Factory(ptr);
+            while (sc.Type != 0)
+            {
+                list.Add(sc);
+                ptr += sc.Length;
+                sc = ScriptCommand.Factory(ptr);
+            }
+            return list;
         }
     }
 }

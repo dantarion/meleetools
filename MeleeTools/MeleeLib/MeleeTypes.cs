@@ -36,9 +36,35 @@ namespace MeleeLib
     {
         public uint AttributesOffset { get { return attributesoffset; } }
         public uint AttributesOffset2 { get { return attributesoffset2; } }
+        public uint SubactionStart { get { return subactionstart; } }
+        public uint SubactionEnd { get { return subactionend; } }
         public buint attributesoffset;
         public buint attributesoffset2;
-        public fixed uint values[21];
+        private buint unknown1;
+        private buint subactionstart;
+        private buint unknown2;
+        private buint subactionend;
+        public fixed uint values[18];
+    }
+    public struct SubactionHeader
+    {
+        public uint StringOffset { get { return stringoffset; } set { stringoffset = value; } }
+        public uint ScriptOffset { get { return scriptOffset; } set { scriptOffset = value; } }
+        private buint stringoffset;
+        private buint unknown1;
+        private buint unknown2;
+        private buint scriptOffset;
+        private buint unknown3;
+        private buint unknown4;
+    }
+
+    public class Subaction
+    {
+        public int Index{get;set;}
+        public SubactionHeader Header{get;set;}
+        public List<ScriptCommand> Commands { get; set; }
+        public String Name { get; set; }
+
     }
 
 }
