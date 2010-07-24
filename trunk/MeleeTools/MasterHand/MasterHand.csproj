@@ -49,7 +49,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WPG, Version=2.0.3855.17157, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\tmp\WPG\bin\Release\WPG.dll</HintPath>
+      <HintPath>res\WPG.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
