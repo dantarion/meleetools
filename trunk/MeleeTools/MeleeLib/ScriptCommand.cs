@@ -26,6 +26,8 @@ namespace MeleeLib
                 case 0x0b:
                     return new HitboxCommand(ptr);
                 case 0x13:
+                case 0x1f:
+                case 0x32:
                 case 0x34:
                     return new Generic4ByteCommand(ptr);
                 case 0x19:
@@ -35,6 +37,8 @@ namespace MeleeLib
                     return new BodyStateCommand(ptr);
                 case 0x1c:
                     return new PartialBodyStateCommand(ptr);
+                case 0x28:
+                    return new Unknown28Command(ptr);
                 case 0x88:
                     return new ThrowCommand(ptr);
             }
@@ -83,11 +87,12 @@ namespace MeleeLib
 
             dict[0x1f] = new CommandData(0x04, "Model Mod");
 
+            dict[0x28] = new CommandData(0x04, null);
+
+            dict[0x32] = new CommandData(0x04, null);
             dict[0x33] = new CommandData(0x04, "Self-Damage");
             dict[0x34] = new CommandData(0x04, null);
 
-            dict[0x36] = new CommandData(0x12, null);
-            dict[0x37] = new CommandData(0x0c, null);
             dict[0x38] = new CommandData(0x08, "Start Smash Charge");
 
             dict[0x88] = new CommandData(0x88, "Throw");
@@ -175,6 +180,19 @@ namespace MeleeLib
             get { return (BodyTypes)(*(data + 3) & 0x3); }
         }
     }
+    public unsafe class Unknown28Command : ScriptCommand
+    {
+        public Unknown28Command(byte* dataptr)
+            : base(dataptr)
+        {
+        }
+        public UInt32 Flags { get { return *(buint*)(data) &0x3FFF ; } }
+
+        protected override string[] DisplayParams
+        {
+            get { return new[] {Convert.ToString(Flags,2).PadLeft(16,'0')}; }
+        }
+    }
     public unsafe class PartialBodyStateCommand : BodyStateCommand
     {
         public PartialBodyStateCommand(byte* dataptr)
@@ -190,7 +208,7 @@ namespace MeleeLib
         }
         public ushort Bone
         {
-            get { return (ushort) (*(bushort*)(data)& 0x7F) ; }
+            get { return (ushort)(*(bushort*)(data) & 0x7F); }
         }
     }
     public unsafe class Generic4ByteCommand : ScriptCommand
