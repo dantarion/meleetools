@@ -18,8 +18,6 @@ namespace MeleeLib
                     return new TimerCommand(ptr);
                 case 0x03:
                     return new StartLoopCommand(ptr);
-                case 0x07:
-                    return new PointerCommand(ptr);
                 case 0x0b:
                     return new HitboxCommand(ptr);
                 case 0x88:
@@ -317,34 +315,6 @@ namespace MeleeLib
         public ushort Iterations
         {
             get { return *(bushort*)(data + 2); }
-        }
-    }
-    public unsafe class PointerCommand : ScriptCommand
-    {
-
-        public PointerCommand(byte* dataptr)
-            : base(dataptr)
-        {
-        }
-
-        public new string Name
-        {
-            get { return base.Name + " @" + Pointer + ""; }
-        }
-        [CategoryAttribute("Pointer Params")]
-        public string Pointer
-        {
-            get
-            {
-                int pointer = (*(int*)(data + 4));
-                if (BitConverter.IsLittleEndian) pointer = pointer.Reverse();
-                return pointer.ToString("X8");
-            }
-            set(int val)
-            {
-                Pointer = Int32.Parse((*(int*)(data + 4)), System.Globalization.NumberStyles.AllowHexSpecifier)
-            }
-
         }
     }
 }
