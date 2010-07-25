@@ -325,7 +325,7 @@ namespace MeleeLib
             get { return *(bushort*)(data + 12) >> 7 & 0xFFFF; }
         }
     }
-    public unsafe class ThrowCommand : ScriptCommand
+    public unsafe class ThrowCommand : CollisionCommand
     {
         public ThrowCommand(byte* dataptr)
             : base(dataptr)
