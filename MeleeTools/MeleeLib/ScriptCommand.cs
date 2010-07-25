@@ -70,7 +70,7 @@ namespace MeleeLib
 
             dict[0x10] = new CommandData(0x04, "Remove Hitboxes");
             dict[0x11] = new CommandData(0x0c, "Sound Effect");
-            dict[0x12] = new CommandData(0x0c, "Random Smash SFX");
+            dict[0x12] = new CommandData(0x04, "Random Smash SFX");
             dict[0x13] = new CommandData(0x04, "Autocancel?");
             dict[0x14] = new CommandData(0x04, "Reverse Direction");
 
