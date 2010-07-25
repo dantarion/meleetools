@@ -28,6 +28,13 @@ namespace MeleeLib
                 case 0x13:
                 case 0x34:
                     return new Generic4ByteCommand(ptr);
+                case 0x19:
+                    return new VisibilityCommand(ptr);
+                case 0x1a:
+                case 0x1b:
+                    return new BodyStateCommand(ptr);
+                case 0x1c:
+                    return new PartialBodyStateCommand(ptr);
                 case 0x88:
                     return new ThrowCommand(ptr);
             }
@@ -70,9 +77,9 @@ namespace MeleeLib
             dict[0x17] = new CommandData(0x04, "IASA");
 
             dict[0x19] = new CommandData(0x04, "Visibility?");
-            dict[0x1a] = new CommandData(0x04, "Body Invincible");
-            dict[0x1b] = new CommandData(0x04, "Body Invincible2");
-            dict[0x1c] = new CommandData(0x04, "Partial Invincible");
+            dict[0x1a] = new CommandData(0x04, "Body State");
+            dict[0x1b] = new CommandData(0x04, "Body State 2");
+            dict[0x1c] = new CommandData(0x04, "Partial Body State");
 
             dict[0x1f] = new CommandData(0x04, "Model Mod");
 
@@ -146,18 +153,59 @@ namespace MeleeLib
             get { return null; }
         }
     }
+    public unsafe class BodyStateCommand : ScriptCommand
+    {
+        public BodyStateCommand(byte* dataptr)
+            : base(dataptr)
+        {
+        }
+        public enum BodyTypes
+        {
+            Normal = 0x0,
+            Invulnerable = 0x1,
+            Intangible = 0x2
+        }
+        protected override string[] DisplayParams
+        {
+            get { return new[] { BodyType.ToString() }; }
+        }
+
+        public BodyTypes BodyType
+        {
+            get { return (BodyTypes)(*(data + 3) & 0x3); }
+        }
+    }
+    public unsafe class PartialBodyStateCommand : BodyStateCommand
+    {
+        public PartialBodyStateCommand(byte* dataptr)
+            : base(dataptr)
+        {
+        }
+        protected override string[] DisplayParams
+        {
+            get
+            {
+                return new[] { Bone.ToString(), BodyType.ToString() };
+            }
+        }
+        public ushort Bone
+        {
+            get { return (ushort) (*(bushort*)(data)& 0x7F) ; }
+        }
+    }
     public unsafe class Generic4ByteCommand : ScriptCommand
     {
-        public Generic4ByteCommand(byte *ptr):base(ptr)
+        public Generic4ByteCommand(byte* ptr)
+            : base(ptr)
         {
         }
         public ushort Param1
         {
-            get { return *(bushort*) (data + 2); }
+            get { return *(bushort*)(data + 2); }
         }
         protected override string[] DisplayParams
         {
-            get { return new[] {Param1.ToString()};}
+            get { return new[] { Param1.ToString() }; }
         }
     }
     public unsafe class TimerCommand : ScriptCommand
@@ -170,7 +218,7 @@ namespace MeleeLib
 
         protected override string[] DisplayParams
         {
-            get { return new[] { Frames.ToString()}; }
+            get { return new[] { Frames.ToString() }; }
         }
 
         [CategoryAttribute("Timer Params")]
@@ -268,9 +316,30 @@ namespace MeleeLib
 
         protected override unsafe string[] DisplayParams
         {
-            get { return new string[] {ID.ToString()}; }
+            get { return new string[] { ID.ToString() }; }
         }
 
+    }
+    public unsafe class VisibilityCommand : ScriptCommand
+    {
+        public VisibilityCommand(byte* dataptr)
+            : base(dataptr)
+        {
+        }
+        public enum VisibilityConstant
+        {
+            Invisible = 0x0,
+            Visible = 0x1
+        }
+        public VisibilityConstant Visibility
+        {
+            get { return (VisibilityConstant)((data[3]) >> 0 & 0x1); }
+        }
+
+        protected override unsafe string[] DisplayParams
+        {
+            get { return new[] { Visibility.ToString() }; }
+        }
     }
     public unsafe abstract class CollisionCommand : ScriptCommand
     {
@@ -343,7 +412,7 @@ namespace MeleeLib
 
         protected override unsafe string[] DisplayParams
         {
-            get { return new string[]{ThrowType.ToString()}; }
+            get { return new string[] { ThrowType.ToString() }; }
         }
     }
     public unsafe class StartLoopCommand : ScriptCommand
@@ -355,7 +424,7 @@ namespace MeleeLib
 
         protected override string[] DisplayParams
         {
-            get { return new[] {Iterations.ToString()}; }
+            get { return new[] { Iterations.ToString() }; }
         }
 
         [CategoryAttribute("Loop Params")]
