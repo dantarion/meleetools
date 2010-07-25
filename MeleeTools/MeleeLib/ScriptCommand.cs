@@ -20,6 +20,7 @@ namespace MeleeLib
                     return new TimerCommand(ptr);
                 case 0x03:
                     return new StartLoopCommand(ptr);
+                case 0x05:
                 case 0x07:
                     return new PointerCommand(ptr);
                 case 0x0b:
@@ -53,7 +54,7 @@ namespace MeleeLib
             dict[0x02] = new CommandData(0x04, "Asynchronous Timer");
             dict[0x03] = new CommandData(0x04, "Start Loop");
             dict[0x04] = new CommandData(0x04, "Execute Loop");
-            dict[0x05] = new CommandData(0x08,  null);
+            dict[0x05] = new CommandData(0x08, "Goto?");
 
             dict[0x07] = new CommandData(0x08, "Subroutine");
 
@@ -92,17 +93,17 @@ namespace MeleeLib
         protected string getName(uint type)
         {
             setupDict();
-            if (dict.ContainsKey(type) && dict[type].name != null)
+            if (dict.ContainsKey(type))
                 if (DisplayParams == null)
                     return dict[type].name;
-                else return String.Format(DisplayFormat, dict[type].name,
+                else return String.Format(DisplayFormat, dict[type].name ?? String.Format("!Unknown 0x{0:X2}!", type),
                                           String.Join(DisplayParamDelimiter, DisplayParams));
             else return String.Format("!Unknown 0x{0:X2}!", type);
 
         }
         protected abstract string[] DisplayParams { get; }
 
-        public ScriptCommand(byte* dataptr)
+        protected ScriptCommand(byte* dataptr)
         {
             data = dataptr;
         }
