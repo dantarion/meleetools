@@ -39,17 +39,30 @@ namespace MeleeLib
             dict[0x03] = new CommandData(0x04, "Start Loop");
             dict[0x04] = new CommandData(0x04, "Execute Loop");
             dict[0x05] = new CommandData(0x08, "Unknown");
+
             dict[0x07] = new CommandData(0x08, "Subroutine?");
+
             dict[0x0a] = new CommandData(0x14, "GFX Effect");
             dict[0x0b] = new CommandData(0x14, "Hitbox");
+
             dict[0x10] = new CommandData(0x04, "Remove Hitboxes");
             dict[0x11] = new CommandData(0x0c, "Sound Effect");
+            dict[0x12] = new CommandData(0x0c, "Random Smash SFX");
             dict[0x13] = new CommandData(0x04, "Autocancel");
+
             dict[0x17] = new CommandData(0x04, "IASA");
-            dict[0x1a] = new CommandData(0x04, "Body Invincible"); 
+
+            dict[0x1a] = new CommandData(0x04, "Body Invincible");
+            dict[0x1b] = new CommandData(0x04, "Body Invincible2");
+            dict[0x1c] = new CommandData(0x04, "Partial Invincible");
+
+            dict[0x1f] = new CommandData(0x04, "Model Mod");
+
+            dict[0x33] = new CommandData(0x04, "Self-Damage");
+
             dict[0x36] = new CommandData(0x12, "Unknown");
             dict[0x37] = new CommandData(0x0c, "Unknown");
-            dict[0x38] = new CommandData(0x08, "Unknown");
+            dict[0x38] = new CommandData(0x08, "Start Smash Charge");
         }
         static int getLength(uint type)
         {
@@ -59,7 +72,7 @@ namespace MeleeLib
         static String getName(uint type)
         {
             setupDict();
-            return dict.ContainsKey(type) ? dict[type].name : "!Unknown!";
+            return dict.ContainsKey(type) ? dict[type].name : String.Format("!Unknown 0x{0:X2}!", type); ;
         }
         public ScriptCommand(byte* dataptr)
         {
@@ -86,11 +99,6 @@ namespace MeleeLib
         }
         protected byte* data;
     }
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ParamAttribute : System.Attribute
-    {
-    }
-
     public unsafe class GenericCommand : ScriptCommand
     {
         public GenericCommand(byte* ptr) : base(ptr)
@@ -149,7 +157,7 @@ namespace MeleeLib
             POISON_FLOWER=0x3C,
             NOTHING = 0x40
         }
-        public string Name
+        new public string Name
         {
             get { return base.Name + "[" + ID + "]"; }
         }
@@ -183,17 +191,17 @@ namespace MeleeLib
         [CategoryAttribute("Position")]
         public int ZOffset
         {
-            get { return *(bushort*)(data + 6) >> 0 & 0xFFFF; }
+            get { return *(bshort*)(data + 6); }
         }
         [CategoryAttribute("Position")]
         public int YOffset
         {
-            get { return *(bushort*)(data + 8) >> 0 & 0xFFFF; }
+            get { return *(bshort*)(data + 8); }
         }
         [CategoryAttribute("Position")]
         public int XOffset
         {
-            get { return *(bushort*)(data + 10) >> 0 & 0xFFFF; }
+            get { return *(bshort*)(data + 10); }
         }
         [CategoryAttribute("Stats")]
         public int Angle
