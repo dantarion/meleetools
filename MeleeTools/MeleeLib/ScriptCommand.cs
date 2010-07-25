@@ -8,6 +8,8 @@ namespace MeleeLib
 {
     public abstract unsafe class ScriptCommand
     {
+        public const string DisplayFormat = "{0} [{1}]";
+        public const string DisplayParamDelimiter = ", ";
         public static ScriptCommand Factory(byte* ptr)
         {
             var gc = new GenericCommand(ptr);
@@ -18,6 +20,8 @@ namespace MeleeLib
                     return new TimerCommand(ptr);
                 case 0x03:
                     return new StartLoopCommand(ptr);
+                case 0x07:
+                    return new PointerCommand(ptr);
                 case 0x0b:
                     return new HitboxCommand(ptr);
                 case 0x88:
@@ -42,13 +46,13 @@ namespace MeleeLib
                 return;
             dict = new Dictionary<uint, CommandData>();
             dict[0x00] = new CommandData(0x04, "End");
-            dict[0x01] = new CommandData(0x04, "Synch Timer");
-            dict[0x02] = new CommandData(0x04, "Asynch Timer");
+            dict[0x01] = new CommandData(0x04, "Synchronous Timer");
+            dict[0x02] = new CommandData(0x04, "Asynchronous Timer");
             dict[0x03] = new CommandData(0x04, "Start Loop");
             dict[0x04] = new CommandData(0x04, "Execute Loop");
-            dict[0x05] = new CommandData(0x08, "Unknown");
+            dict[0x05] = new CommandData(0x08,  null);
 
-            dict[0x07] = new CommandData(0x08, "Subroutine?");
+            dict[0x07] = new CommandData(0x08, "Subroutine");
 
             dict[0x0a] = new CommandData(0x14, "GFX Effect");
             dict[0x0b] = new CommandData(0x14, "Hitbox");
@@ -56,7 +60,7 @@ namespace MeleeLib
             dict[0x10] = new CommandData(0x04, "Remove Hitboxes");
             dict[0x11] = new CommandData(0x0c, "Sound Effect");
             dict[0x12] = new CommandData(0x0c, "Random Smash SFX");
-            dict[0x13] = new CommandData(0x04, "Autocancel");
+            dict[0x13] = new CommandData(0x04, "Autocancel?");
             dict[0x14] = new CommandData(0x04, "Reverse Direction");
 
             dict[0x17] = new CommandData(0x04, "IASA");
@@ -69,8 +73,8 @@ namespace MeleeLib
             dict[0x1f] = new CommandData(0x04, "Model Mod");
             dict[0x33] = new CommandData(0x04, "Self-Damage");
 
-            dict[0x36] = new CommandData(0x12, "Unknown");
-            dict[0x37] = new CommandData(0x0c, "Unknown");
+            dict[0x36] = new CommandData(0x12, null);
+            dict[0x37] = new CommandData(0x0c, null);
             dict[0x38] = new CommandData(0x08, "Start Smash Charge");
 
             dict[0x88] = new CommandData(0x88, "Throw");
@@ -80,11 +84,19 @@ namespace MeleeLib
             setupDict();
             return dict.ContainsKey(type) ? dict[type].length : 4;
         }
-        static String getName(uint type)
+        protected string getName(uint type)
         {
             setupDict();
-            return dict.ContainsKey(type) ? dict[type].name : String.Format("!Unknown 0x{0:X2}!", type); ;
+            if (dict.ContainsKey(type) && dict[type].name != null)
+                if (DisplayParams == null)
+                    return dict[type].name;
+                else return String.Format(DisplayFormat, dict[type].name,
+                                          String.Join(DisplayParamDelimiter, DisplayParams));
+            else return String.Format("!Unknown 0x{0:X2}!", type);
+
         }
+        protected abstract string[] DisplayParams { get; }
+
         public ScriptCommand(byte* dataptr)
         {
             data = dataptr;
@@ -122,6 +134,11 @@ namespace MeleeLib
         {
 
         }
+
+        protected override string[] DisplayParams
+        {
+            get { return null; }
+        }
     }
     public unsafe class TimerCommand : ScriptCommand
     {
@@ -130,10 +147,12 @@ namespace MeleeLib
         {
 
         }
-        public new string Name
+
+        protected override string[] DisplayParams
         {
-            get { return base.Name + "[" + Frames + "]"; }
+            get { return new string[] { Frames.ToString()}; }
         }
+
         [CategoryAttribute("Timer Params")]
         public ushort Frames
         {
@@ -226,10 +245,12 @@ namespace MeleeLib
         {
             get { return Convert.ToBoolean((data[19]) >> 0 & 0x1); }
         }
-        public new string Name
+
+        protected override unsafe string[] DisplayParams
         {
-            get { return base.Name + "[" + ID + "]"; }
+            get { return new string[] {ID.ToString()}; }
         }
+
     }
     public unsafe abstract class CollisionCommand : ScriptCommand
     {
@@ -299,6 +320,11 @@ namespace MeleeLib
         {
             get { return (ThrowTypes)(*(bushort*)(data) >> 7 & 0x1); }
         }
+
+        protected override unsafe string[] DisplayParams
+        {
+            get { return new string[]{ThrowType.ToString()}; }
+        }
     }
     public unsafe class StartLoopCommand : ScriptCommand
     {
@@ -307,14 +333,33 @@ namespace MeleeLib
         {
         }
 
-        public new string Name
+        protected override unsafe string[] DisplayParams
         {
-            get { return base.Name + "[" + Iterations + "]"; }
+            get { return new string[] {Iterations.ToString()}; }
         }
+
         [CategoryAttribute("Loop Params")]
         public ushort Iterations
         {
             get { return *(bushort*)(data + 2); }
+        }
+    }
+    public unsafe class PointerCommand : ScriptCommand
+    {
+
+        public PointerCommand(byte* dataptr)
+            : base(dataptr)
+        {
+        }
+
+        protected override string[] DisplayParams
+        {
+            get { return  new string[] {String.Format("{0:X8}",Pointer)}; }
+        }
+        [CategoryAttribute("Pointer Params")]
+        public int Pointer
+        {
+            get { return (int)(*(buint*)(data + 4)); }
         }
     }
 }
