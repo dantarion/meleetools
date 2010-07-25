@@ -24,6 +24,9 @@ namespace MeleeLib
                     return new PointerCommand(ptr);
                 case 0x0b:
                     return new HitboxCommand(ptr);
+                case 0x13:
+                case 0x34:
+                    return new Generic4ByteCommand(ptr);
                 case 0x88:
                     return new ThrowCommand(ptr);
             }
@@ -46,7 +49,7 @@ namespace MeleeLib
                 return;
             dict = new Dictionary<uint, CommandData>();
             dict[0x00] = new CommandData(0x04, "End");
-            dict[0x01] = new CommandData(0x04, "Synchronous Timer");
+            dict[0x01] = new CommandData(0x04, "Synchronous Timer ");
             dict[0x02] = new CommandData(0x04, "Asynchronous Timer");
             dict[0x03] = new CommandData(0x04, "Start Loop");
             dict[0x04] = new CommandData(0x04, "Execute Loop");
@@ -71,7 +74,9 @@ namespace MeleeLib
             dict[0x1c] = new CommandData(0x04, "Partial Invincible");
 
             dict[0x1f] = new CommandData(0x04, "Model Mod");
+
             dict[0x33] = new CommandData(0x04, "Self-Damage");
+            dict[0x34] = new CommandData(0x04, null);
 
             dict[0x36] = new CommandData(0x12, null);
             dict[0x37] = new CommandData(0x0c, null);
@@ -140,6 +145,20 @@ namespace MeleeLib
             get { return null; }
         }
     }
+    public unsafe class Generic4ByteCommand : ScriptCommand
+    {
+        public Generic4ByteCommand(byte *ptr):base(ptr)
+        {
+        }
+        public ushort Param1
+        {
+            get { return *(bushort*) (data + 2); }
+        }
+        protected override string[] DisplayParams
+        {
+            get { return new[] {Param1.ToString()};}
+        }
+    }
     public unsafe class TimerCommand : ScriptCommand
     {
         public TimerCommand(byte* ptr)
@@ -150,7 +169,7 @@ namespace MeleeLib
 
         protected override string[] DisplayParams
         {
-            get { return new string[] { Frames.ToString()}; }
+            get { return new[] { Frames.ToString()}; }
         }
 
         [CategoryAttribute("Timer Params")]
@@ -333,9 +352,9 @@ namespace MeleeLib
         {
         }
 
-        protected override unsafe string[] DisplayParams
+        protected override string[] DisplayParams
         {
-            get { return new string[] {Iterations.ToString()}; }
+            get { return new[] {Iterations.ToString()}; }
         }
 
         [CategoryAttribute("Loop Params")]
@@ -354,12 +373,12 @@ namespace MeleeLib
 
         protected override string[] DisplayParams
         {
-            get { return  new string[] {String.Format("{0:X8}",Pointer)}; }
+            get { return new[] { String.Format("@{0:X8}", Pointer) }; }
         }
         [CategoryAttribute("Pointer Params")]
-        public int Pointer
+        public uint Pointer
         {
-            get { return (int)(*(buint*)(data + 4)); }
+            get { return (*(uint*)(data + 4)).Reverse(); }
         }
     }
 }
