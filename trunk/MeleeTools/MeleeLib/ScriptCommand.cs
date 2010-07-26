@@ -6,126 +6,86 @@ using System.Reflection;
 using System.ComponentModel;
 namespace MeleeLib
 {
-    public abstract unsafe class ScriptCommand
+    public unsafe class ScriptCommand
     {
-        public const string DisplayFormat = "{0} [{1}]";
-        public const string DisplayParamDelimiter = ", ";
-        public static ScriptCommand Factory(byte* ptr)
+        public static ScriptCommand Factory(byte* data)
         {
-            var gc = new GenericCommand(ptr);
-            switch (gc.Type)
+            switch ((uint)data[0] >> 2)
             {
-                case 0x01:
-                case 0x02:
-                    return new TimerCommand(ptr);
-                case 0x03:
-                    return new StartLoopCommand(ptr);
-                case 0x05:
-                case 0x07:
-                    return new PointerCommand(ptr);
-                case 0x0b:
-                    return new HitboxCommand(ptr);
-                case 0x13:
-                case 0x1f:
-                case 0x32:
-                case 0x34:
-                    return new Generic4ByteCommand(ptr);
-                case 0x19:
-                    return new VisibilityCommand(ptr);
-                case 0x1a:
-                case 0x1b:
-                    return new BodyStateCommand(ptr);
-                case 0x1c:
-                    return new PartialBodyStateCommand(ptr);
-                case 0x28:
-                    return new Unknown28Command(ptr);
-                case 0x88:
-                    return new ThrowCommand(ptr);
+                case 0x00: return new ScriptCommand(data, "End");
+                case 0x01: return new TimerCommand(data, "Synchronous Timer");
+                case 0x02: return new TimerCommand(data, "Asynchronous Timer");
+                case 0x03: return new StartLoopCommand(data);
+
+                case 0x05: return new PointerCommand(data, "Goto?");
+
+                case 0x07: return new PointerCommand(data, "Subroutine?");
+
+                case 0x0a: return new UnsolvedCommand(data, "Graphic Effect", 0x14);
+                case 0x0b: return new HitboxCommand(data);
+
+                case 0x10: return new ScriptCommand(data, "Remove Hitboxes");
+                case 0x11: return new UnsolvedCommand(data, "Sound Effect");
+                case 0x12: return new UnsolvedCommand(data, "Random Smash SFX");
+                case 0x13: return new UnsolvedCommand(data, "Autocancel?");
+                case 0x14: return new UnsolvedCommand(data, "Reverse Direction");
+
+                case 0x17: return new ScriptCommand(data, "IASA");
+                case 0x19: return new VisibilityCommand(data);
+                case 0x1a: return new BodyStateCommand(data, "Body State 1");
+                case 0x1b: return new BodyStateCommand(data, "Body State 2");
+                case 0x1c: return new PartialBodyStateCommand(data);
+
+                case 0x1f: return new UnsolvedCommand(data, "Model Mod");
+
+                case 0x28: return new UnsolvedCommand(data, 0x8);
+
+                case 0x33: return new UnsolvedCommand(data, "Self-Damage");
+
+                case 0x38: return new UnsolvedCommand(data, "Start Smash Charge");
+
+                case 0x88: return new ThrowCommand(data);
             }
-            return new GenericCommand(ptr);
+            return new UnsolvedCommand(data);
         }
-        struct CommandData
-        {
-            public CommandData(int length, string name)
-            {
-                this.name = name;
-                this.length = length;
-            }
-            public string name;
-            public int length;
-        }
-        static Dictionary<uint, CommandData> dict;
-        static void setupDict()
 
-        {
-            if (dict != null)
-                return;
-            dict = new Dictionary<uint, CommandData>();
-            dict[0x00] = new CommandData(0x04, "End");
-            dict[0x01] = new CommandData(0x04, "Synchronous Timer ");
-            dict[0x02] = new CommandData(0x04, "Asynchronous Timer");
-            dict[0x03] = new CommandData(0x04, "Start Loop");
-            dict[0x04] = new CommandData(0x04, "Execute Loop");
-            dict[0x05] = new CommandData(0x08, "Goto?");
-
-            dict[0x07] = new CommandData(0x08, "Subroutine");
-
-            dict[0x0a] = new CommandData(0x14, "GFX Effect");
-            dict[0x0b] = new CommandData(0x14, "Hitbox");
-
-            dict[0x10] = new CommandData(0x04, "Remove Hitboxes");
-            dict[0x11] = new CommandData(0x0c, "Sound Effect");
-            dict[0x12] = new CommandData(0x04, "Random Smash SFX");
-            dict[0x13] = new CommandData(0x04, "Autocancel?");
-            dict[0x14] = new CommandData(0x04, "Reverse Direction");
-
-            dict[0x17] = new CommandData(0x04, "IASA");
-
-            dict[0x19] = new CommandData(0x04, "Visibility?");
-            dict[0x1a] = new CommandData(0x04, "Body State");
-            dict[0x1b] = new CommandData(0x04, "Body State 2");
-            dict[0x1c] = new CommandData(0x04, "Partial Body State");
-
-            dict[0x1f] = new CommandData(0x04, "Model Mod");
-
-            dict[0x28] = new CommandData(0x04, null);
-
-            dict[0x32] = new CommandData(0x04, null);
-            dict[0x33] = new CommandData(0x04, "Self-Damage");
-            dict[0x34] = new CommandData(0x04, null);
-
-            dict[0x38] = new CommandData(0x08, "Start Smash Charge");
-
-            dict[0x88] = new CommandData(0x88, "Throw");
-        }
-        static int getLength(uint type)
-        {
-            setupDict();
-            return dict.ContainsKey(type) ? dict[type].length : 4;
-        }
-        protected string getName(uint type)
-        {
-            setupDict();
-            if (dict.ContainsKey(type))
-                if (DisplayParams == null)
-                    return dict[type].name;
-                else return String.Format(DisplayFormat, dict[type].name ?? String.Format("!Unknown 0x{0:X2}!", type),
-                                          String.Join(DisplayParamDelimiter, DisplayParams));
-            else return String.Format("!Unknown 0x{0:X2}!", type);
-
-        }
-        protected abstract string[] DisplayParams { get; }
 
         protected ScriptCommand(byte* dataptr)
+            : this(dataptr, null, 0x4) { }
+        protected ScriptCommand(byte* ptr, uint length)
+            : this(ptr, null, length) { }
+        protected ScriptCommand(byte* dataptr, string name)
+            : this(dataptr, name, 0x4) { }
+        protected ScriptCommand(byte* dataptr, string name, uint length)
         {
-            data = dataptr;
+            Data = dataptr;
+            Name = name;
+            Length = length;
         }
+
+        private string _name;
         [CategoryAttribute("Internal")]
-        public uint Type { get { return (uint)data[0] >> 2; } }
+        public string Name
+        {
+            get { return _name ?? String.Format("!Unknown 0x{0:X2}!", Type); }
+            set { _name = value; }
+        }
+
         [CategoryAttribute("Internal")]
-        public int Length { get { return getLength(Type); } }
+        public uint Type { get { return (uint)Data[0] >> 2; } }
+
+        uint _length;
         [CategoryAttribute("Internal")]
-        public string Name { get { return getName(Type); } }
+        public uint Length
+        {
+            get { return _length == 0 ? 4 : _length; }
+            set { _length = value; }
+        }
+        protected string[] DisplayParams
+        {
+            get { return null; }
+        }
+
         [CategoryAttribute("Internal")]
         public string HexString
         {
@@ -134,27 +94,35 @@ namespace MeleeLib
                 var sb = new StringBuilder();
                 for (int i = 0; i < Length; i++)
                 {
-                    sb.AppendFormat("{0:X2} ", data[i]);
+                    sb.AppendFormat("{0:X2} ", Data[i]);
                 }
                 return sb.ToString();
             }
         }
-        protected byte* data;
+        protected byte* Data;
+
+
     }
     [AttributeUsage(AttributeTargets.Property)]
     public class ParamAttribute : System.Attribute
     {
     }
 
-    public unsafe class GenericCommand : ScriptCommand
+    public unsafe class UnsolvedCommand : ScriptCommand
     {
-        public GenericCommand(byte* ptr)
+        public UnsolvedCommand(byte* ptr)
             : base(ptr)
         {
 
         }
 
-        protected override string[] DisplayParams
+        public UnsolvedCommand(byte* ptr, string name, uint length)
+            : base(ptr, name, length) { }
+
+        public UnsolvedCommand(byte* ptr, string name)
+            : base(ptr, name) { }
+        public UnsolvedCommand(byte* ptr, uint length) : base(ptr, length) { }
+        protected new string[] DisplayParams
         {
             get { return null; }
         }
@@ -162,23 +130,25 @@ namespace MeleeLib
     public unsafe class BodyStateCommand : ScriptCommand
     {
         public BodyStateCommand(byte* dataptr)
-            : base(dataptr)
-        {
-        }
+            : base(dataptr) { }
+
+        public BodyStateCommand(byte* dataptr, string name)
+            : base(dataptr, name) { }
+
         public enum BodyTypes
         {
             Normal = 0x0,
             Invulnerable = 0x1,
             Intangible = 0x2
         }
-        protected override string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new[] { BodyType.ToString() }; }
         }
 
         public BodyTypes BodyType
         {
-            get { return (BodyTypes)(*(data + 3) & 0x3); }
+            get { return (BodyTypes)(*(Data + 3) & 0x3); }
         }
     }
     public unsafe class Unknown28Command : ScriptCommand
@@ -187,9 +157,9 @@ namespace MeleeLib
             : base(dataptr)
         {
         }
-        public UInt32 Flags { get { return *(buint*)(data) & 0x3FFF; } }
+        public UInt32 Flags { get { return *(buint*)(Data) & 0x3FFF; } }
 
-        protected override string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new[] { Convert.ToString(Flags, 2).PadLeft(16, '0') }; }
         }
@@ -200,7 +170,7 @@ namespace MeleeLib
             : base(dataptr)
         {
         }
-        protected override string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get
             {
@@ -209,7 +179,7 @@ namespace MeleeLib
         }
         public ushort Bone
         {
-            get { return (ushort)(*(bushort*)(data) & 0x7F); }
+            get { return (ushort)(*(bushort*)(Data) & 0x7F); }
         }
     }
     public unsafe class Generic4ByteCommand : ScriptCommand
@@ -220,9 +190,9 @@ namespace MeleeLib
         }
         public ushort Param1
         {
-            get { return *(bushort*)(data + 2); }
+            get { return *(bushort*)(Data + 2); }
         }
-        protected override string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new[] { Param1.ToString() }; }
         }
@@ -235,7 +205,12 @@ namespace MeleeLib
 
         }
 
-        protected override string[] DisplayParams
+        public TimerCommand(byte* ptr, string name)
+            : base(ptr, name)
+        {
+        }
+
+        protected new string[] DisplayParams
         {
             get { return new[] { Frames.ToString() }; }
         }
@@ -243,7 +218,7 @@ namespace MeleeLib
         [CategoryAttribute("Timer Params")]
         public ushort Frames
         {
-            get { return *(bushort*)(data + 2); }
+            get { return *(bushort*)(Data + 2); }
         }
     }
     public unsafe class HitboxCommand : CollisionCommand
@@ -253,87 +228,90 @@ namespace MeleeLib
         {
 
         }
+
+        private string _name;
+        public new string Name { get { return _name ?? "Hitbox"; } set { _name = value; } }
         public enum HurtboxInteractionFlags
         {
             NoClank, SomeClank, MoreClank, AllClank
         }
         public int ID
         {
-            get { return *(bushort*)(data) >> 7 & 0x7; }
+            get { return *(bushort*)(Data) >> 7 & 0x7; }
         }
         public int UnknownR
         {
-            get { return ((data[1] & 0x7B) >> 2); }
+            get { return ((Data[1] & 0x7B) >> 2); }
         }
         [CategoryAttribute("Stats")]
         public int BoneID
         {
-            get { return *(bushort*)(data + 1) >> 3 & 0x7F; }
+            get { return *(bushort*)(Data + 1) >> 3 & 0x7F; }
         }
         public int Unknown0
         {
-            get { return ((data[2] & 0x07) >> 1); }
+            get { return ((Data[2] & 0x07) >> 1); }
         }
         [CategoryAttribute("Position")]
         public int Size
         {
-            get { return *(bushort*)(data + 4) >> 0 & 0xFFFF; }
+            get { return *(bushort*)(Data + 4) >> 0 & 0xFFFF; }
         }
         [CategoryAttribute("Position")]
         public int ZOffset
         {
-            get { return *(bshort*)(data + 6); }
+            get { return *(bshort*)(Data + 6); }
         }
         [CategoryAttribute("Position")]
         public int YOffset
         {
-            get { return *(bshort*)(data + 8); }
+            get { return *(bshort*)(Data + 8); }
         }
         [CategoryAttribute("Position")]
         public int XOffset
         {
-            get { return *(bshort*)(data + 10); }
+            get { return *(bshort*)(Data + 10); }
         }
         public int UnknownQ
         {
-            get { return (data[15]) >> 2 & 0x7; }
+            get { return (Data[15]) >> 2 & 0x7; }
         }
         [CategoryAttribute("Flags")]
         public HurtboxInteractionFlags HurtboxInteraction
         {
-            get { return (HurtboxInteractionFlags)((data[15]) >> 0 & 0x3); }
+            get { return (HurtboxInteractionFlags)((Data[15]) >> 0 & 0x3); }
         }
         [CategoryAttribute("Stats")]
         public int BaseKnockback
         {
-            get { return *(bushort*)(data + 16) >> 7 & 0xFFFF; }
+            get { return *(bushort*)(Data + 16) >> 7 & 0xFFFF; }
         }
         public int UnknownV
         {
-            get { return (data[17]) >> 1 & 0x1; }
+            get { return (Data[17]) >> 1 & 0x1; }
         }
         [CategoryAttribute("Stats")]
         public int ShieldDamage
         {
-            get { return *(bushort*)(data + 17) >> 2 & 0x3F; }
+            get { return *(bushort*)(Data + 17) >> 2 & 0x3F; }
         }
         [CategoryAttribute("Stats")]
         public int SFX
         {
-            get { return *(bushort*)(data + 18) >> 2 & 0xFF; }
+            get { return *(bushort*)(Data + 18) >> 2 & 0xFF; }
         }
         [CategoryAttribute("Flags")]
         public bool HitsGround
         {
-            get { return Convert.ToBoolean((data[19]) >> 1 & 0x1); }
+            get { return Convert.ToBoolean((Data[19]) >> 1 & 0x1); }
         }
         [CategoryAttribute("Flags")]
         public bool HitsAir
         {
-            get { return Convert.ToBoolean((data[19]) >> 0 & 0x1); }
+            get { return Convert.ToBoolean((Data[19]) >> 0 & 0x1); }
         }
 
-        protected override unsafe string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new string[] { ID.ToString() }; }
         }
@@ -352,10 +330,10 @@ namespace MeleeLib
         }
         public VisibilityConstant Visibility
         {
-            get { return (VisibilityConstant)((data[3]) >> 0 & 0x1); }
+            get { return (VisibilityConstant)((Data[3]) >> 0 & 0x1); }
         }
 
-        protected override unsafe string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new[] { Visibility.ToString() }; }
         }
@@ -363,10 +341,8 @@ namespace MeleeLib
     public unsafe abstract class CollisionCommand : ScriptCommand
     {
         protected CollisionCommand(byte* dataptr)
-            : base(dataptr)
-        {
-        }
-
+            : base(dataptr, 0x14){}
+        protected CollisionCommand(byte* dataptr, uint length) : base(dataptr,length){}
 
         public enum ElementType
         {
@@ -390,35 +366,33 @@ namespace MeleeLib
         [CategoryAttribute("Stats")]
         public int Damage
         {
-            get { return *(bushort*)(data + 2) >> 0 & 0x1FF; }
+            get { return *(bushort*)(Data + 2) >> 0 & 0x1FF; }
         }
         [CategoryAttribute("Stats")]
         public int KnockbackGrowth
         {
-            get { return *(bushort*)(data + 13) >> 6 & 0x1FF; }
+            get { return *(bushort*)(Data + 13) >> 6 & 0x1FF; }
         }
         [CategoryAttribute("Stats")]
         public int WeightDependantKnockback
         {
-            get { return *(bushort*)(data + 14) >> 5 & 0x1FF; }
+            get { return *(bushort*)(Data + 14) >> 5 & 0x1FF; }
         }
         [CategoryAttribute("Stats")]
         public ElementType Element
         {
-            get { return (ElementType)(*(bushort*)(data + 17) >> 2 & 0x1F); }
+            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
         }
         [CategoryAttribute("Stats")]
         public int Angle
         {
-            get { return *(bushort*)(data + 12) >> 7 & 0xFFFF; }
+            get { return *(bushort*)(Data + 12) >> 7 & 0xFFFF; }
         }
     }
     public unsafe class ThrowCommand : CollisionCommand
     {
         public ThrowCommand(byte* dataptr)
-            : base(dataptr)
-        {
-        }
+            : base(dataptr,0xc){}
         public enum ThrowTypes
         {
             Throw = 0x00,
@@ -426,10 +400,10 @@ namespace MeleeLib
         }
         public ThrowTypes ThrowType
         {
-            get { return (ThrowTypes)(*(bushort*)(data) >> 7 & 0x1); }
+            get { return (ThrowTypes)(*(bushort*)(Data) >> 7 & 0x1); }
         }
 
-        protected override unsafe string[] DisplayParams
+        protected new string[] DisplayParams
         {
             get { return new string[] { ThrowType.ToString() }; }
         }
@@ -441,7 +415,12 @@ namespace MeleeLib
         {
         }
 
-        protected override string[] DisplayParams
+        public StartLoopCommand(byte* dataptr, string name)
+            : base(dataptr, name)
+        {
+        }
+
+        protected new string[] DisplayParams
         {
             get { return new[] { Iterations.ToString() }; }
         }
@@ -449,25 +428,30 @@ namespace MeleeLib
         [CategoryAttribute("Loop Params")]
         public ushort Iterations
         {
-            get { return *(bushort*)(data + 2); }
+            get { return *(bushort*)(Data + 2); }
         }
     }
     public unsafe class PointerCommand : ScriptCommand
     {
 
         public PointerCommand(byte* dataptr)
-            : base(dataptr)
+            : base(dataptr, 0x8)
         {
         }
 
-        protected override string[] DisplayParams
+        public PointerCommand(byte* dataptr, string name)
+            : base(dataptr, name, 0x8)
+        {
+        }
+
+        protected new string[] DisplayParams
         {
             get { return new[] { String.Format("@{0:X8}", Pointer) }; }
         }
         [CategoryAttribute("Pointer Params")]
         public uint Pointer
         {
-            get { return (*(uint*)(data + 4)).Reverse(); }
+            get { return (*(uint*)(Data + 4)).Reverse(); }
         }
     }
     public interface IBrawlCommand
