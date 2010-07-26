@@ -38,11 +38,12 @@ namespace MeleeLib
 
                 case 0x1f: return new UnsolvedCommand(data, "Model Mod");
 
+                case 0x22: return new ThrowCommand(data);
+
                 case 0x33: return new UnsolvedCommand(data, "Self-Damage");
 
                 case 0x38: return new UnsolvedCommand(data, "Start Smash Charge");
 
-                case 0x88: return new ThrowCommand(data);
             }
             return new UnsolvedCommand(data);
         }
@@ -109,7 +110,7 @@ namespace MeleeLib
     public unsafe class UnsolvedCommand : ScriptCommand
     {
         public UnsolvedCommand(byte* ptr)
-            : base(ptr){}
+            : base(ptr) { }
 
         public UnsolvedCommand(byte* ptr, string name, uint length)
             : base(ptr, name, length) { }
@@ -334,6 +335,7 @@ namespace MeleeLib
     {
         protected CollisionCommand(byte* dataptr) : base(dataptr) { }
         protected CollisionCommand(byte* dataptr, uint length) : base(dataptr, length) { }
+        protected CollisionCommand(byte* dataptr, string name, uint length) : base(dataptr, name, length) { }
 
         public enum ElementType
         {
@@ -383,7 +385,7 @@ namespace MeleeLib
     public unsafe class ThrowCommand : CollisionCommand
     {
         public ThrowCommand(byte* dataptr)
-            : base(dataptr, 0xc) { }
+            : base(dataptr, "Throw", 0xc) { }
         public enum ThrowTypes
         {
             Throw = 0x00,
