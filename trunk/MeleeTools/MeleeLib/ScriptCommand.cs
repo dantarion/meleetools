@@ -48,7 +48,12 @@ namespace MeleeLib
             return new UnsolvedCommand(data);
         }
 
-
+        protected const string DisplayFormat = "{0} [{1}]";
+        protected const string DisplayDelimiter = " ";
+        public string DisplayName
+        {
+            get { return DisplayParams == null ? Name : String.Format(DisplayFormat, Name, String.Join(DisplayDelimiter, DisplayParams)); }
+        }
         protected ScriptCommand(byte* dataptr)
             : this(dataptr, null, 0x4) { }
         protected ScriptCommand(byte* ptr, uint length)
@@ -80,7 +85,7 @@ namespace MeleeLib
             get { return _length == 0 ? 4 : _length; }
             set { _length = value; }
         }
-        protected string[] DisplayParams
+        virtual protected string[] DisplayParams
         {
             get { return null; }
         }
@@ -118,7 +123,7 @@ namespace MeleeLib
         public UnsolvedCommand(byte* ptr, string name)
             : base(ptr, name) { }
         public UnsolvedCommand(byte* ptr, uint length) : base(ptr, length) { }
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return null; }
         }
@@ -137,7 +142,7 @@ namespace MeleeLib
             Invulnerable = 0x1,
             Intangible = 0x2
         }
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { BodyType.ToString() }; }
         }
@@ -155,7 +160,7 @@ namespace MeleeLib
         }
         public UInt32 Flags { get { return *(buint*)(Data) & 0x3FFF; } }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { Convert.ToString(Flags, 2).PadLeft(16, '0') }; }
         }
@@ -166,7 +171,7 @@ namespace MeleeLib
             : base(dataptr)
         {
         }
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get
             {
@@ -188,7 +193,7 @@ namespace MeleeLib
         {
             get { return *(bushort*)(Data + 2); }
         }
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { Param1.ToString() }; }
         }
@@ -206,10 +211,11 @@ namespace MeleeLib
         {
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { Frames.ToString() }; }
         }
+
 
         [CategoryAttribute("Timer Params")]
         public ushort Frames
@@ -220,10 +226,8 @@ namespace MeleeLib
     public unsafe class HitboxCommand : CollisionCommand
     {
         public HitboxCommand(byte* ptr)
-            : base(ptr, 0x14) { }
+            : base(ptr, "Hitbox", 0x14) { }
 
-        private string _name;
-        public new string Name { get { return _name ?? "Hitbox"; } set { _name = value; } }
         public enum HurtboxInteractionFlags
         {
             NoClank, SomeClank, MoreClank, AllClank
@@ -304,7 +308,7 @@ namespace MeleeLib
             get { return Convert.ToBoolean((Data[19]) >> 0 & 0x1); }
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new string[] { ID.ToString() }; }
         }
@@ -326,7 +330,7 @@ namespace MeleeLib
             get { return (VisibilityConstant)((Data[3]) >> 0 & 0x1); }
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { Visibility.ToString() }; }
         }
@@ -396,7 +400,7 @@ namespace MeleeLib
             get { return (ThrowTypes)(*(bushort*)(Data) >> 7 & 0x1); }
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new string[] { ThrowType.ToString() }; }
         }
@@ -413,7 +417,7 @@ namespace MeleeLib
         {
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { Iterations.ToString() }; }
         }
@@ -437,7 +441,7 @@ namespace MeleeLib
         {
         }
 
-        protected new string[] DisplayParams
+        protected override string[] DisplayParams
         {
             get { return new[] { String.Format("@{0:X8}", Pointer) }; }
         }
