@@ -56,6 +56,7 @@ namespace MeleeLib
         }
         static Dictionary<uint, CommandData> dict;
         static void setupDict()
+
         {
             if (dict != null)
                 return;
@@ -186,11 +187,11 @@ namespace MeleeLib
             : base(dataptr)
         {
         }
-        public UInt32 Flags { get { return *(buint*)(data) &0x3FFF ; } }
+        public UInt32 Flags { get { return *(buint*)(data) & 0x3FFF; } }
 
         protected override string[] DisplayParams
         {
-            get { return new[] {Convert.ToString(Flags,2).PadLeft(16,'0')}; }
+            get { return new[] { Convert.ToString(Flags, 2).PadLeft(16, '0') }; }
         }
     }
     public unsafe class PartialBodyStateCommand : BodyStateCommand
@@ -469,4 +470,10 @@ namespace MeleeLib
             get { return (*(uint*)(data + 4)).Reverse(); }
         }
     }
+    public interface IBrawlCommand
+    {
+        uint CommandID { get; }
+        byte[] ParameterData { get; }
+    }
+    public class IncompatibleCommandException : ArgumentException { }
 }
