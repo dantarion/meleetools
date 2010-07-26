@@ -149,22 +149,10 @@ namespace MeleeLib
             get { return new[] { BodyType.ToString() }; }
         }
 
+        [CategoryAttribute("Parameters")]
         public BodyTypes BodyType
         {
             get { return (BodyTypes)(*(Data + 3) & 0x3); }
-        }
-    }
-    public unsafe class Unknown28Command : ScriptCommand
-    {
-        public Unknown28Command(byte* dataptr)
-            : base(dataptr)
-        {
-        }
-        public UInt32 Flags { get { return *(buint*)(Data) & 0x3FFF; } }
-
-        protected override string[] DisplayParams
-        {
-            get { return new[] { Convert.ToString(Flags, 2).PadLeft(16, '0') }; }
         }
     }
     public unsafe class PartialBodyStateCommand : BodyStateCommand
@@ -180,24 +168,10 @@ namespace MeleeLib
                 return new[] { Bone.ToString(), BodyType.ToString() };
             }
         }
+        [CategoryAttribute("Parameters")]
         public ushort Bone
         {
             get { return (ushort)(*(bushort*)(Data) & 0x7F); }
-        }
-    }
-    public unsafe class Generic4ByteCommand : ScriptCommand
-    {
-        public Generic4ByteCommand(byte* ptr)
-            : base(ptr)
-        {
-        }
-        public ushort Param1
-        {
-            get { return *(bushort*)(Data + 2); }
-        }
-        protected override string[] DisplayParams
-        {
-            get { return new[] { Param1.ToString() }; }
         }
     }
     public unsafe class TimerCommand : ScriptCommand
@@ -219,7 +193,7 @@ namespace MeleeLib
         }
 
 
-        [CategoryAttribute("Timer Params")]
+        [CategoryAttribute("Parameters")]
         public ushort Frames
         {
             get { return *(bushort*)(Data + 2); }
@@ -234,19 +208,23 @@ namespace MeleeLib
         {
             NoClank, SomeClank, MoreClank, AllClank
         }
+        [CategoryAttribute("Identifier")]
         public int ID
         {
             get { return *(bushort*)(Data) >> 7 & 0x7; }
         }
+
+        [CategoryAttribute("Unknown")]
         public int UnknownR
         {
             get { return ((Data[1] & 0x7B) >> 2); }
         }
-        [CategoryAttribute("Stats")]
+        [CategoryAttribute("Position")]
         public int BoneID
         {
             get { return *(bushort*)(Data + 1) >> 3 & 0x7F; }
         }
+        [CategoryAttribute("Unknown")]
         public int Unknown0
         {
             get { return ((Data[2] & 0x07) >> 1); }
@@ -271,6 +249,7 @@ namespace MeleeLib
         {
             get { return *(bshort*)(Data + 10); }
         }
+        [CategoryAttribute("Unknown")]
         public int UnknownQ
         {
             get { return (Data[15]) >> 2 & 0x7; }
@@ -285,6 +264,7 @@ namespace MeleeLib
         {
             get { return *(bushort*)(Data + 16) >> 7 & 0xFFFF; }
         }
+        [CategoryAttribute("Unknown")]
         public int UnknownV
         {
             get { return (Data[17]) >> 1 & 0x1; }
@@ -294,7 +274,7 @@ namespace MeleeLib
         {
             get { return *(bushort*)(Data + 17) >> 2 & 0x3F; }
         }
-        [CategoryAttribute("Stats")]
+        [CategoryAttribute("Cosmetic")]
         public int SFX
         {
             get { return *(bushort*)(Data + 18) >> 2 & 0xFF; }
@@ -327,6 +307,7 @@ namespace MeleeLib
             Invisible = 0x0,
             Visible = 0x1
         }
+        [CategoryAttribute("Parameters")]
         public VisibilityConstant Visibility
         {
             get { return (VisibilityConstant)((Data[3]) >> 0 & 0x1); }
@@ -377,7 +358,7 @@ namespace MeleeLib
         {
             get { return *(bushort*)(Data + 14) >> 5 & 0x1FF; }
         }
-        [CategoryAttribute("Stats")]
+        [CategoryAttribute("Cosmetic")]
         public ElementType Element
         {
             get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
