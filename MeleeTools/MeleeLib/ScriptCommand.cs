@@ -111,10 +111,7 @@ namespace MeleeLib
     public unsafe class UnsolvedCommand : ScriptCommand
     {
         public UnsolvedCommand(byte* ptr)
-            : base(ptr)
-        {
-
-        }
+            : base(ptr){}
 
         public UnsolvedCommand(byte* ptr, string name, uint length)
             : base(ptr, name, length) { }
@@ -224,10 +221,7 @@ namespace MeleeLib
     public unsafe class HitboxCommand : CollisionCommand
     {
         public HitboxCommand(byte* ptr)
-            : base(ptr)
-        {
-
-        }
+            : base(ptr, 0x14) { }
 
         private string _name;
         public new string Name { get { return _name ?? "Hitbox"; } set { _name = value; } }
@@ -340,9 +334,8 @@ namespace MeleeLib
     }
     public unsafe abstract class CollisionCommand : ScriptCommand
     {
-        protected CollisionCommand(byte* dataptr)
-            : base(dataptr, 0x14){}
-        protected CollisionCommand(byte* dataptr, uint length) : base(dataptr,length){}
+        protected CollisionCommand(byte* dataptr) : base(dataptr) { }
+        protected CollisionCommand(byte* dataptr, uint length) : base(dataptr, length) { }
 
         public enum ElementType
         {
@@ -392,7 +385,7 @@ namespace MeleeLib
     public unsafe class ThrowCommand : CollisionCommand
     {
         public ThrowCommand(byte* dataptr)
-            : base(dataptr,0xc){}
+            : base(dataptr, 0xc) { }
         public enum ThrowTypes
         {
             Throw = 0x00,
