@@ -25,7 +25,7 @@ namespace MeleeLib
                 case 0x0b: return new HitboxCommand(data);
 
                 case 0x10: return new ScriptCommand(data, "Remove Hitboxes");
-                case 0x11: return new UnsolvedCommand(data, "Sound Effect");
+                case 0x11: return new UnsolvedCommand(data, "Sound Effect", 0xc);
                 case 0x12: return new UnsolvedCommand(data, "Random Smash SFX");
                 case 0x13: return new UnsolvedCommand(data, "Autocancel?");
                 case 0x14: return new UnsolvedCommand(data, "Reverse Direction");
@@ -37,8 +37,6 @@ namespace MeleeLib
                 case 0x1c: return new PartialBodyStateCommand(data);
 
                 case 0x1f: return new UnsolvedCommand(data, "Model Mod");
-
-                case 0x28: return new UnsolvedCommand(data, 0x8);
 
                 case 0x33: return new UnsolvedCommand(data, "Self-Damage");
 
