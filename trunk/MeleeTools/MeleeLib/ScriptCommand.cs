@@ -50,6 +50,8 @@ namespace MeleeLib
 
         protected const string DisplayFormat = "{0} [{1}]";
         protected const string DisplayDelimiter = " ";
+
+        [CategoryAttribute("Name")]
         public string DisplayName
         {
             get { return DisplayParams == null ? Name : String.Format(DisplayFormat, Name, String.Join(DisplayDelimiter, DisplayParams)); }
@@ -68,7 +70,7 @@ namespace MeleeLib
         }
 
         private string _name;
-        [CategoryAttribute("Internal")]
+        [CategoryAttribute("Name")]
         public string Name
         {
             get { return _name ?? String.Format("!Unknown 0x{0:X2}!", Type); }
