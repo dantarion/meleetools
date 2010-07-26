@@ -42,7 +42,7 @@ namespace MeleeLib
 
                 case 0x33: return new UnsolvedCommand(data, "Self-Damage");
 
-                case 0x38: return new UnsolvedCommand(data, "Start Smash Charge");
+                case 0x38: return new UnsolvedCommand(data, "Start Smash Charge", 0x8);
 
             }
             return new UnsolvedCommand(data);
