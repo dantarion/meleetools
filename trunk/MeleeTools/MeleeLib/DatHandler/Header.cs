@@ -46,8 +46,6 @@ namespace MeleeLib.DatHandler {
             if (file.RawData.Count < Length) throw new IndexOutOfRangeException();
             File = file;
         }
-        public Section1Index Section1Index { get { return new Section1Index(File); } }
-        public Section2Index Section2Index { get { return new Section2Index(File); } }
         public File File { get; private set; }
         public uint Filesize { get { return RawData.GetUInt32(0x00); } }
         public uint Datasize { get { return RawData.GetUInt32(0x04); } }
@@ -66,7 +64,6 @@ namespace MeleeLib.DatHandler {
             }
         }
 
-        public FTHeader FTHeader { get { return new FTHeader(File); } }
         public ArraySlice<byte> RawData { get { return File.RawData.Slice(0, Length); } }
     }
 }

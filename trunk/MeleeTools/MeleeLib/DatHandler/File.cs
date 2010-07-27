@@ -20,11 +20,10 @@ namespace MeleeLib.DatHandler
             stream.Read(RawData.Array, 0, RawData.Count);
             stream.Close();
         }
-        
-#region Convenience Properties
-        public AttributesIndex Attributes { get { return Header.FTHeader.Attributes; } }
-#endregion
-
+        public FTHeader FTHeader { get { return new FTHeader(this); } }
+        public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
         public ArraySlice<byte> RawData { get; private set; }
+        public Section1Index Section1Index { get { return new Section1Index(this); } }
+        public Section2Index Section2Index { get { return new Section2Index(this); } }
     }
 }
