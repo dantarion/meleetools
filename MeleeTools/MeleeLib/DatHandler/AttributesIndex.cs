@@ -24,7 +24,7 @@ namespace MeleeLib.DatHandler
         {
             get { return Parent.File; }
         }
-        public uint Size { get { return Parent.AttributesEnd - Parent.AttributesStart-4; } }
+        public uint Size { get { return Parent.AttributesEnd - Parent.AttributesStart; } }
         public uint Count { get { return Size/4; } }
         public override ArraySlice<byte> RawData
         {
