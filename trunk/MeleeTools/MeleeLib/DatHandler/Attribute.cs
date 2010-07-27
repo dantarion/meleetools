@@ -64,7 +64,7 @@ namespace MeleeLib.DatHandler
         }
 
         public readonly int Index;
-        public float Value { get { return RawData.GetSingle(Index*4); } }
+        public float Value { get { return RawData.GetSingle(0); } }
         private readonly AttributesIndex _parent;
         public override AttributesIndex Parent
         {
