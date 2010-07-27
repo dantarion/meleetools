@@ -66,7 +66,7 @@ namespace MeleeLib
             : this(data, name, 0x4) { }
         protected ScriptCommand(ArraySegment<byte> data, string name, uint length)
         {
-            Data = new ArraySegment<
+         //   Data = new ArraySegment<
             Array.Copy(data.Array, data.Offset, Data, 0, Length);
             Name = name;
             Length = length;

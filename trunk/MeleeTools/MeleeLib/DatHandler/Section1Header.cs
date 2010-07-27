@@ -7,7 +7,7 @@ namespace MeleeLib.DatHandler
 {
     public class Section1Header : Node<Header>, IEnumerable<Section1>
     {
-
+        public const int Length = 0x20;
         protected Section1Header(Header parent)
         {
             _parent = parent;
