@@ -9,7 +9,7 @@ namespace MeleeLib.DatHandler {
         public Section2Index(File file) {
             File = file;
         }
-        public uint Count { get { return File.Header.SectionType1Count; } }
+        public uint Count { get { return File.Header.SectionType2Count; } }
         public IEnumerator<Section2Header> GetEnumerator() { for (var i = 0; i < Count; i++) yield return this[i]; }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
         public Section2Header this[int i] {
