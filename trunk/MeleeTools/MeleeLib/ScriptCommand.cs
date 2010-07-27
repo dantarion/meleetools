@@ -7,7 +7,7 @@ using System.ComponentModel;
 using MeleeLib.System;
 
 namespace MeleeLib
-{
+{/*
     public class ScriptCommand
     {
         public static ScriptCommand Factory(ArraySegment<byte> data)
@@ -481,4 +481,5 @@ namespace MeleeLib
         byte[] ParameterData { get; }
     }
     public class IncompatibleCommandException : ArgumentException { }
+  */
 }

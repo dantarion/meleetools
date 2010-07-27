@@ -37,7 +37,7 @@ namespace MeleeLib.DatHandler
                 if ((int)Parent.Datasize != Parent.Datasize ||
                     (int)Parent.OffsetCount != Parent.OffsetCount)
                     throw new IOException();
-                File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4 + _index * 8, Length);
+               return File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4 + _index * 8, Length);
             }
         }
     }

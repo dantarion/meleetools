@@ -9,11 +9,11 @@ namespace MeleeLib.DatHandler
         public buint AttriibutesStart { get { return RawData.GetUInt32(0x00); } }
         public buint AttributesEnd { get { return RawData.GetUInt32(0x04); } }
         public buint Unknown1 { get { return RawData.GetUInt32(0x08); } }
-        public buint SubactionStart { get { return RawData.GetUInt32(0x0C)} }
-        public buint Unknown2 { get { return RawData.GetUInt32(0x10)}}
+        public buint SubactionStart { get { return RawData.GetUInt32(0x0C); } }
+        public buint Unknown2 { get { return RawData.GetUInt32(0x10); } }
         public buint SubactionEnd { get { return RawData.GetUInt32(0x14); } }
         public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
-        public ArraySlice<byte> Values { get { RawData.Slice(0x18, 18);  } }
+        public ArraySlice<byte> Values { get { return RawData.Slice(0x18, 18);  } }
 
         public FTHeader(Header parent)
         {

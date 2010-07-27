@@ -16,7 +16,7 @@ namespace MeleeLib.DatHandler
 
 
         public uint Count { get { return Parent.SectionType1Count; } }
-        public IEnumerator<Section1Header> GetEnumerator()
+        public IEnumerator<Section2Header> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
                 yield return this[i];
@@ -26,13 +26,13 @@ namespace MeleeLib.DatHandler
         {
             return GetEnumerator();
         }
-        public Section1Header this[int i]
+        public Section2Header this[int i]
         {
 
             get
             {
                 if (i > Count) throw new IndexOutOfRangeException();
-                return new Section1Header(Parent, i);
+                return new Section2Header(Parent, i);
             }
         }
 

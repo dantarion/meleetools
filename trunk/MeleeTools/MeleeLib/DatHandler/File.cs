@@ -10,14 +10,13 @@ namespace MeleeLib.DatHandler
     {
         public readonly String Filename;
         public readonly ArraySlice<byte> RawData;
-        public readonly Header Header;
+        public Header Header { get { return new Header(this); }}
         public File(string filename)
         {
             Filename = filename;
             var stream = global::System.IO.File.OpenRead(filename);
             if (stream.Length > int.MaxValue) throw new IOException("File too large.");
             RawData = new byte[(int)stream.Length].Slice();
-            Header = new Header(this);
         }
     }
 }
