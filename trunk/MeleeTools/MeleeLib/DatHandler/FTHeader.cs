@@ -5,17 +5,15 @@ namespace MeleeLib.DatHandler
 {
     public class FTHeader : Node<Header>
     {
-        public uint AttributesOffset { get { return attributesoffset; } }
-        public uint AttributesOffset2 { get { return attributesoffset2; } }
-        public uint SubactionStart { get { return subactionstart; } }
-        public uint SubactionEnd { get { return subactionend; } }
-        public buint attributesoffset;
-        public buint attributesoffset2;
-        private buint unknown1;
-        private buint subactionstart;
-        private buint unknown2;
-        private buint subactionend;
-        public fixed uint values[18];
+        public const int Length = 0x60;
+        public buint AttriibutesStart { get { return RawData.GetUInt32(0x00); } }
+        public buint AttributesEnd { get { return RawData.GetUInt32(0x04); } }
+        public buint Unknown1 { get { return RawData.GetUInt32(0x08); } }
+        public buint SubactionStart { get { return RawData.GetUInt32(0x0C)} }
+        public buint Unknown2 { get { return RawData.GetUInt32(0x10)}}
+        public buint SubactionEnd { get { return RawData.GetUInt32(0x14); } }
+        public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
+        public ArraySlice<byte> Values { get { RawData.Slice(0x18, 18);  } }
 
         public FTHeader(Header parent)
         {
@@ -26,17 +24,17 @@ namespace MeleeLib.DatHandler
 
         public override Header Parent
         {
-            get { throw new NotImplementedException(); }
+            get { return _parent; }
         }
 
         public override File File
         {
-            get { throw new NotImplementedException(); }
+            get { return Parent.File; }
         }
 
         public override ArraySlice<byte> RawData
         {
-            get { throw new NotImplementedException(); }
+            get { return File.RawData.Slice((int)Parent.Section1Index[0].DataOffset, Length); }
         }
     }
 }

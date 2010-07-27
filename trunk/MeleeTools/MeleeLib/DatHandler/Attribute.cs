@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using MeleeLib.System;
 
-namespace MeleeLib
+namespace MeleeLib.DatHandler
 {
 
-    public class Attribute
+    public class Attribute : Node<AttributesIndex>
     {
-        public Attribute(int offset, object value = null)
+        public Attribute( AttributesIndex parent,int index, object value = null)
         {
-            Offset = offset;
+            _parent = parent;
+            Index = index;
             Value = value;
         }
         public string Name
         {
             get
             {
-                switch (Offset)
+                switch (Index * 4)
                 {
                     case 0x000: return "Walk Initial Velocity";
                     case 0x004: return "Walk Acceleration?";
@@ -64,7 +64,22 @@ namespace MeleeLib
             }
         }
 
-        public readonly int Offset;
+        public readonly int Index;
         public object Value { get; set; }
+        private readonly AttributesIndex _parent;
+        public override AttributesIndex Parent
+        {
+            get { return _parent; }
+        }
+
+        public override File File
+        {
+            get { return Parent.File; }
+        }
+
+        public override ArraySlice<byte> RawData
+        {
+            get { return Parent.RawData.Slice(); }
+        }
     }
 }
