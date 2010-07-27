@@ -6,11 +6,11 @@ using MeleeLib.System;
 
 namespace MeleeLib.DatHandler
 {
-    public class File
+    public class File : IData
     {
         public readonly String Filename;
-        public readonly ArraySlice<byte> RawData;
-        public Header Header { get { return new Header(this); }}
+        public Header Header { get { return new Header(this); } }
+        public ArraySlice<byte> DataSection { get { return RawData.Slice(Header.Length); } }
         public File(string filename)
         {
             Filename = filename;
@@ -24,5 +24,7 @@ namespace MeleeLib.DatHandler
         #region Convenience Properties
         public AttributesIndex Attributes { get { return Header.FTHeader.Attributes; } }
         #endregion
+
+        public ArraySlice<byte> RawData { get; private set; }
     }
 }

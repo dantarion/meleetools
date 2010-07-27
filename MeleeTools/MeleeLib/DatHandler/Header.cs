@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 
 namespace MeleeLib.DatHandler
 {
-    public class Header : Node<File>
+    public class Header : Node<File>, IData
     {
         #region TODO
         //        public readonly FTHeader FTHeader;
@@ -48,16 +49,16 @@ namespace MeleeLib.DatHandler
         #endregion
         public const int Length = 0x20;
         private Header() { }
-        public Header(File parent)
+        public Header(File root)
         {
-            if (parent.RawData.Count < Length) throw new IndexOutOfRangeException();
-            _parent = parent;
+            if (root.RawData.Count < Length) throw new IndexOutOfRangeException();
+            _root = root;
         }
         public Section1Index Section1Index { get { return new Section1Index(this); } }
         public Section2Index Section2Index { get { return new Section2Index(this); } }
-        private readonly File _parent;
-        public override File Parent { get { return _parent; } }
-        public override File File { get { return Parent; } }
+        private readonly File _root;
+        public override File Root { get { return _root; } }
+
         public uint Filesize { get { return RawData.GetUInt32(0x00); } }
         public uint Datasize { get { return RawData.GetUInt32(0x04); } }
         public uint OffsetCount { get { return RawData.GetUInt32(0x08); } }
@@ -79,10 +80,9 @@ namespace MeleeLib.DatHandler
 
         public FTHeader FTHeader { get { return new FTHeader(this); } }
 
-        public override ArraySlice<byte> RawData
+        public ArraySlice<byte> RawData
         {
-            get { return Parent.RawData.Slice(0, Length); }
+            get { return Root.RawData.Slice(0, Length); }
         }
-        public ArraySlice<byte> DataSection { get { return Parent.RawData.Slice(Length); } }
     }
 }

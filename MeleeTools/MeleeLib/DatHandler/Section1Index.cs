@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 
 namespace MeleeLib.DatHandler
 {
-    public class Section1Index : Node<Header>, IEnumerable<Section1Header>
+    public class Section1Index : ChildNode<File, Header>, IEnumerable<Section1Header>, IData
     {
         public Section1Index(Header parent)
         {
@@ -41,14 +42,10 @@ namespace MeleeLib.DatHandler
             get { return _parent; }
         }
 
-        public override File File
-        {
-            get { return Parent.File; }
-        }
 
-        public override ArraySlice<byte> RawData
+        public ArraySlice<byte> RawData
         {
-            get { return Parent.DataSection.Slice((int) Parent.Datasize + (int) Parent.OffsetCount*4, (int)Count*8); }
+            get { return Root.DataSection.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4, (int)Count * 8); }
         }
     }
 }

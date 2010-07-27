@@ -1,9 +1,10 @@
 ﻿using System;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 
 namespace MeleeLib.DatHandler
 {
-    public class FTHeader : Node<Header>
+    public class FTHeader : ChildNode<File, Header>, IData
     {
         public const int Length = 0x60;
         public uint AttributesStart { get { return RawData.GetUInt32(0x00); } }
@@ -13,7 +14,7 @@ namespace MeleeLib.DatHandler
         public uint Unknown2 { get { return RawData.GetUInt32(0x10); } }
         public uint SubactionEnd { get { return RawData.GetUInt32(0x14); } }
         public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
-        public ArraySlice<byte> Values { get { return RawData.Slice(0x18, 18);  } }
+        public ArraySlice<byte> Values { get { return RawData.Slice(0x18, 18); } }
 
         public FTHeader(Header parent)
         {
@@ -27,14 +28,15 @@ namespace MeleeLib.DatHandler
             get { return _parent; }
         }
 
-        public override File File
+
+        public override File Root
         {
-            get { return Parent.File; }
+            get { return Parent.Root; }
         }
 
-        public override ArraySlice<byte> RawData
+        public ArraySlice<byte> RawData
         {
-            get { return Parent.DataSection.Slice((int)Parent.Section1Index[0].DataOffset, Length); }
+            get { return Root.DataSection.Slice((int)Parent.Section1Index[0].DataOffset, Length); }
         }
-    }           
+    }
 }
