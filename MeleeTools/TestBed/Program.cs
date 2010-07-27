@@ -1,28 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MeleeLib;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.Reflection;
+using MeleeLib.DatHandler;
+
 namespace ConsoleApplication1
 {
     class Program
     {
-        static void prettyPrint(object o)
-        {
-            foreach (PropertyInfo pi in o.GetType().GetProperties())
-            {
-                if (pi.Name.Contains("Offset") && !pi.Name.Contains("Count"))
-                    Console.WriteLine("{0:6} - @0x{1:X8}", pi.Name, pi.GetValue(o, null));
-                else
-                    Console.WriteLine("{0:6} - {1}", pi.Name, pi.GetValue(o, null));
-            }
-        }
         static void Main(string[] args)
         {
-
+            var file = new File(@"X:\Brawl Hacking\Melee\Backup\Super Smash Bros. Melee - Character Files\1.00\1 - Moveset\Marth\PlMs.dat");
+            AttributesIndex attributes = file.Header.FTHeader.Attributes;
+            for (var i = 0; i < attributes.Count; i++ )
+            {
+                Console.WriteLine(String.Format("0x{0:X4} {1} = {2}", i * 4, attributes[i].Name, attributes[i].Value));
+            }
+            Console.ReadLine();
         }
     }
 }

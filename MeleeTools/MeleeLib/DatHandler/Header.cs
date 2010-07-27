@@ -83,5 +83,6 @@ namespace MeleeLib.DatHandler
         {
             get { return Parent.RawData.Slice(0, Length); }
         }
+        public ArraySlice<byte> DataSection { get { return Parent.RawData.Slice(Length); } }
     }
 }

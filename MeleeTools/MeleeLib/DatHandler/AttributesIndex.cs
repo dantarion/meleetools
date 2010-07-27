@@ -24,17 +24,19 @@ namespace MeleeLib.DatHandler
         {
             get { return Parent.File; }
         }
-        public uint Count { get { return Parent.AttributesEnd - Parent.AttributesStart; } }
+        public uint Size { get { return Parent.AttributesEnd - Parent.AttributesStart-4; } }
+        public uint Count { get { return Size/4; } }
         public override ArraySlice<byte> RawData
         {
             get
             {
-                return File.RawData.Slice((int)Parent.AttributesStart, (int)Count);
+                
+                return Parent.Parent.DataSection.Slice((int)Parent.AttributesStart, (int)Size);
             }
         }
         public Attribute this[int i]
         {
-            get {return new Attribute(this, i, RawData.GetInt32(i)); }
+            get {return new Attribute(this, i); }
         }
 
         public IEnumerator<Attribute> GetEnumerator()

@@ -6,11 +6,10 @@ namespace MeleeLib.DatHandler
 
     public class Attribute : Node<AttributesIndex>
     {
-        public Attribute( AttributesIndex parent,int index, object value = null)
+        public Attribute(AttributesIndex parent, int index)
         {
             _parent = parent;
             Index = index;
-            Value = value;
         }
         public string Name
         {
@@ -65,7 +64,7 @@ namespace MeleeLib.DatHandler
         }
 
         public readonly int Index;
-        public object Value { get; set; }
+        public float Value { get { return RawData.GetSingle(Index*4); } }
         private readonly AttributesIndex _parent;
         public override AttributesIndex Parent
         {
@@ -79,7 +78,7 @@ namespace MeleeLib.DatHandler
 
         public override ArraySlice<byte> RawData
         {
-            get { return Parent.RawData.Slice(); }
+            get { return Parent.RawData.Slice(Index * sizeof(float), 0x4); }
         }
     }
 }

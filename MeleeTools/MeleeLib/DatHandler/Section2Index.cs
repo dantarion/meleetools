@@ -48,7 +48,7 @@ namespace MeleeLib.DatHandler
 
         public override ArraySlice<byte> RawData
         {
-            get { throw new NotImplementedException(); }
+            get { return Parent.DataSection.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4, (int)Count * 8); }
         }
     }
 }

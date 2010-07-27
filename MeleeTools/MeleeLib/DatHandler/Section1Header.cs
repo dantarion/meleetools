@@ -4,23 +4,23 @@ using MeleeLib.System;
 
 namespace MeleeLib.DatHandler
 {
-    public class Section1Header : Node<Header>
+    public class Section1Header : Node<Section1Index>
     {
         public const int Length = 0x8;
-        public string Name { get { return File.RawData.GetAsciiString((int) (Parent.StringOffsetBase + StringOffset)); } }
+        public string Name { get { return Parent.Parent.DataSection.GetAsciiString((int) (Parent.Parent.StringOffsetBase + StringOffset)); } }
         private readonly int _index;
         public Section1Data Data { get { return new Section1Data(this); } }
-        public Section1Header(Header parent, int index)
+        public Section1Header(Section1Index parent, int index)
         {
             if (parent == null) throw new ArgumentNullException("parent");
-            if (parent.SectionType1Count < index) throw new IndexOutOfRangeException();
+            if (parent.Count < index) throw new IndexOutOfRangeException();
             _parent = parent;
             _index = index;
         }
-        public uint StringOffset { get { return RawData.GetUInt32(0x00, true); } }
-        public uint DataOffset   { get { return RawData.GetUInt32(0x04, true); } }
-        private readonly Header _parent;
-        public override Header Parent
+        public uint StringOffset { get { return RawData.GetUInt32(0x04); } }
+        public uint DataOffset   { get { return RawData.GetUInt32(0x00); } }
+        private readonly Section1Index _parent;
+        public override Section1Index Parent
         {
             get { return _parent; }
         }
@@ -34,7 +34,7 @@ namespace MeleeLib.DatHandler
         {
             get
             {
-                return File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount*4 + _index*8, Length);
+                return Parent.RawData.Slice(_index*8, Length);
             }
         }
     }
