@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace MeleeLib
 {
 
-    public struct Attribute
+    public class Attribute
     {
+        public Attribute(int offset, object value = null)
+        {
+            Offset = offset;
+            Value = value;
+        }
         public string Name
         {
             get
             {
-                switch (_offset)
+                switch (Offset)
                 {
                     case 0x000: return "Walk Initial Velocity";
                     case 0x004: return "Walk Acceleration?";
@@ -59,8 +63,8 @@ namespace MeleeLib
                 return "";
             }
         }
-        private int _offset;
-        public int Offset { get { return _offset; } set { _offset = value; } }
+
+        public readonly int Offset;
         public object Value { get; set; }
     }
 }
