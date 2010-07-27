@@ -32,7 +32,7 @@ namespace MeleeLib.DatHandler
             get
             {
                 if (i > Count) throw new IndexOutOfRangeException();
-                return new Section1Header(Parent, i);
+                return new Section1Header(this, i);
             }
         }
 
@@ -48,7 +48,7 @@ namespace MeleeLib.DatHandler
 
         public override ArraySlice<byte> RawData
         {
-            get { throw new NotImplementedException(); }
+            get { return Parent.DataSection.Slice((int) Parent.Datasize + (int) Parent.OffsetCount*4, (int)Count*8); }
         }
     }
 }

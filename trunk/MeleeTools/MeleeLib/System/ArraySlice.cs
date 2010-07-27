@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,9 +38,9 @@ namespace MeleeLib.System
             CopyTo(array);
             return array;
         }
-        public int IndexOf(T value)
+        public int IndexOf(T value, int startIndex = 0)
         {
-            return global::System.Array.IndexOf(Array, value, Offset, Count);
+            return global::System.Array.IndexOf(Array, value, Offset + startIndex, Count-startIndex) - Offset;
         }
         public int Count { get; private set; }
 
@@ -99,9 +100,16 @@ namespace MeleeLib.System
             var value = BitConverter.ToUInt32(arraySlice.Array, arraySlice.Offset + offset);
             return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
         }
+        public static Single GetSingle(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
+        {
+            var value = BitConverter.ToSingle(arraySlice.Array, arraySlice.Offset + offset);
+            return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
+        }
         public static string GetAsciiString(this ArraySlice<byte> arraySlice, int offset)
         {
-            return Encoding.ASCII.GetString(arraySlice.Slice(offset, arraySlice.IndexOf(0)).ToArray());
+            var endIndex = arraySlice.IndexOf(0, offset);
+            var newSlice = arraySlice.Slice(offset, endIndex-offset);
+            return Encoding.UTF7.GetString((newSlice).ToArray());
         }
     }
 }
