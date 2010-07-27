@@ -17,8 +17,8 @@ namespace MeleeLib.DatHandler
             _parent = parent;
             _index = index;
         }
-        public buint StringOffset { get { return RawData.GetUInt32(0x00); } }
-        public buint DataOffset { get { return RawData.GetUInt32(0x04); } }
+        public uint StringOffset { get { return RawData.GetUInt32(0x00); } }
+        public uint DataOffset { get { return RawData.GetUInt32(0x04); } }
         private readonly Header _parent;
         public override Header Parent
         {

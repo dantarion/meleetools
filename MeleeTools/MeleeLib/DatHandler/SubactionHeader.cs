@@ -7,11 +7,11 @@ namespace MeleeLib.DatHandler
     {
         public uint StringOffset { get { return stringoffset; } set { stringoffset = value; } }
         public uint ScriptOffset { get { return scriptOffset; } set { scriptOffset = value; } }
-        private buint stringoffset;
-        private buint unknown1;
-        private buint unknown2;
-        private buint scriptOffset;
-        private buint unknown3;
-        private buint unknown4;
+        private uint stringoffset;
+        private uint unknown1;
+        private uint unknown2;
+        private uint scriptOffset;
+        private uint unknown3;
+        private uint unknown4;
     }
 }
