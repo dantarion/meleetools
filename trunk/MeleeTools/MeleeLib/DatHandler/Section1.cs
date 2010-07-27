@@ -4,17 +4,18 @@ using MeleeLib.System;
 
 namespace MeleeLib
 {
-    public class SectionHeader : Node<Header>
+    public class Section1 : Node<Header>
     {
         public const int Length = 0x8;
-        public readonly ArraySlice<byte> RawData;
-        public readonly string Name;
-        public SectionHeader(Header parent, uint sectionNumber)
+        public string Name { get { File.RawData.GetAsciiString((int) (Parent.StringOffsetBase + StringOffset))}};
+        private readonly int _index;
+
+        public Section1(Header parent, int index)
         {
-            File = file;
-            uint offset = _par.Datasize + Parent.OffsetCount*4 + sectionNumber*8;
-            RawData = ;
-            Name = File.RawFile.GetAsciiString((int) (File.StringOffsetBase + StringOffset));
+            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent.SectionType1Count < index) throw new IndexOutOfRangeException();
+            _parent = parent;
+            _index = index;
         }
         public buint StringOffset { get { return RawData.GetUInt32(0x00); } }
         public buint DataOffset   { get { return RawData.GetUInt32(0x04); } }
@@ -33,7 +34,7 @@ namespace MeleeLib
         {
             get
             {
-                File.RawFile.Slice((int)offset, Length);
+                File.RawData.Slice(_parent.Datasize + Parent.OffsetCount * 4 + _index * 8), Length);
             }
         }
     }
