@@ -9,39 +9,20 @@ namespace MeleeLib.DatHandler
     public class File
     {
         public readonly String Filename;
-        public readonly ArraySlice<byte> RawFile;
+        public readonly ArraySlice<byte> RawData;
         public readonly Header Header;
-        public readonly SectionHeader[][] SectionHeaders;
+        public readonly SectionHeader[][] Section1Headers;
         public readonly FTHeader FTHeader;
         public readonly List<Attribute> Attributes;
         public readonly List<Subaction> Subactions;
-        public uint StringOffsetBase { get { return Header.Datasize + Header.OffsetCount * 4 + Header.SectionType1Count * 8 + Header.SectionType2Count * 8; } }
         public File(string filename)
         {
             Filename = filename;
-            //Load up file
             var stream = global::System.IO.File.OpenRead(filename);
             if (stream.Length > int.MaxValue) throw new IOException("File too large.");
-            RawFile = new byte[(int)stream.Length].Slice();
-            //Get the header
+            RawData = new byte[(int)stream.Length].Slice();
             Header = new Header(this);
-            //Allocate space for the rest of the file
-            SectionHeaders = new SectionHeader[2][];
-            SectionHeaders[0] = new SectionHeader[Header.SectionType1Count];
-            for (uint i = 0; i < SectionHeaders[0].Length; i++) Section1Entries[i] = new SectionHeader(this, i);
 
-            //Read SectionType2s
-            for (int i = 0; i < header.SectionType2Count; i++)
-            {
-                fixed (byte* ptr = rawdata)
-                {
-                    SectionHeader section = *(SectionHeader*)(ptr + header.Datasize + header.OffsetCount * 4 + header.SectionType1Count * 8 + i * 8);
-                    Console.WriteLine(section.StringOffset);
-                    string name = new String((sbyte*)ptr + stringoffsetbase + section.StringOffset);
-                    Section2Entries[name] = section;
-
-                }
-            }
             //FTHeader
             fixed (byte* ptr = rawdata)
             {

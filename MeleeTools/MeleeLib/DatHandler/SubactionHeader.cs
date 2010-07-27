@@ -1,6 +1,6 @@
 ﻿using MeleeLib.System;
 
-namespace MeleeLib
+namespace MeleeLib.DatHandler
 {
     public struct SubactionHeader
     {
