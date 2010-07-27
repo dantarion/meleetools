@@ -10,10 +10,11 @@ namespace MeleeLib.DatHandler {
         public uint Unknown2 { get { return RawData.GetUInt32(0x10); } }
         public uint SubactionEnd { get { return RawData.GetUInt32(0x14); } }
         public ArraySlice<byte> Values { get { return RawData.Slice(0x18, 18); } }
+        private FTHeader() {}
         public FTHeader(File file) { File = file; }
         public File File { get; private set; }
         public ArraySlice<byte> RawData {
-            get { return File.DataSection.Slice((int)File.Section1Index[0].DataOffset, Length); }
+            get { return File.DataSection.Slice((int)File.SectionType1Index[0].DataOffset, Length); }
         }
 
     }

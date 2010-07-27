@@ -7,6 +7,7 @@ namespace MeleeLib.DatHandler
     public class AttributesIndex : IEnumerable<Attribute>, IData, IFilePiece
     {
         public File File { get; private set; }
+        private AttributesIndex() {}
         public AttributesIndex(File file) { File = file; }
         public uint Size { get { return File.FTHeader.AttributesEnd - File.FTHeader.AttributesStart; } }
         public uint Count { get { return Size / 4; } }
