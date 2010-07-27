@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 
 namespace MeleeLib.DatHandler
 {
-    public class AttributesIndex : Node<FTHeader>, IEnumerable<Attribute>
+    public class AttributesIndex : ChildNode<File, FTHeader>, IEnumerable<Attribute>, IData
     {
         private readonly FTHeader _parent;
 
@@ -20,23 +21,22 @@ namespace MeleeLib.DatHandler
             get { return _parent; }
         }
 
-        public override File File
+        public override File Root
         {
-            get { return Parent.File; }
+            get { return Parent.Root; }
         }
         public uint Size { get { return Parent.AttributesEnd - Parent.AttributesStart; } }
-        public uint Count { get { return Size/4; } }
-        public override ArraySlice<byte> RawData
+        public uint Count { get { return Size / 4; } }
+        public ArraySlice<byte> RawData
         {
             get
             {
-                
-                return Parent.Parent.DataSection.Slice((int)Parent.AttributesStart, (int)Size);
+                return Root.DataSection.Slice((int)Parent.AttributesStart, (int)Size);
             }
         }
         public Attribute this[int i]
         {
-            get {return new Attribute(this, i); }
+            get { return new Attribute(this, i); }
         }
 
         public IEnumerator<Attribute> GetEnumerator()

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 
 namespace MeleeLib.DatHandler
 {
-    public class Section2Header : Node<Header>
+    public class Section2Header : ChildNode<File,Header> ,IData
     {
         public const int Length = 0x8;
-        public string Name { get { return File.RawData.GetAsciiString((int)(Parent.StringOffsetBase + StringOffset)); } }
+        public string Name { get { return Root.RawData.GetAsciiString((int)(Parent.StringOffsetBase + StringOffset)); } }
         private readonly int _index;
         public Section2Data Data { get { return new Section2Data(this); } }
         public Section2Header(Header parent, int index)
@@ -25,19 +26,15 @@ namespace MeleeLib.DatHandler
             get { return _parent; }
         }
 
-        public override File File
-        {
-            get { return Parent.File; }
-        }
 
-        public override ArraySlice<byte> RawData
+        public ArraySlice<byte> RawData
         {
             get
             {
                 if ((int)Parent.Datasize != Parent.Datasize ||
                     (int)Parent.OffsetCount != Parent.OffsetCount)
                     throw new IOException();
-               return File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4 + _index * 8, Length);
+               return Root.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount * 4 + _index * 8, Length);
             }
         }
     }

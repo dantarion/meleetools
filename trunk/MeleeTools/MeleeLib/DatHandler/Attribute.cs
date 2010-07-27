@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using MeleeLib.System;
+using MeleeLib.System.Node;
 using Microsoft.Contracts;
 
 namespace MeleeLib.DatHandler
 {
 
-    public class Attribute : Node<AttributesIndex>
+    public class Attribute : ChildNode<File, AttributesIndex>, IData
     {
         public Attribute(AttributesIndex parent, int index)
         {
@@ -97,12 +98,12 @@ namespace MeleeLib.DatHandler
             get { return _parent; }
         }
 
-        public override File File
+        public override File Root
         {
-            get { return Parent.File; }
+            get { return Parent.Root; }
         }
 
-        public override ArraySlice<byte> RawData
+        public ArraySlice<byte> RawData
         {
             get { return Parent.RawData.Slice(Index * sizeof(float), 0x4); }
         }
