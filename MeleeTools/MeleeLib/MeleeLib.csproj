@@ -80,15 +80,14 @@
     <Compile Include="DatHandler\Section2Data.cs" />
     <Compile Include="DatHandler\Section2Header.cs" />
     <Compile Include="DatHandler\Section2Index.cs" />
+    <Compile Include="DatHandler\SubactionIndex.cs" />
     <Compile Include="System\IData.cs" />
-    <Compile Include="System\Node\SiblingNode.cs" />
     <Compile Include="DatHandler\SubactionHeader.cs" />
-    <Compile Include="System\Node\ChildNode.cs" />
     <Compile Include="DatHandler\File.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatHandler\ScriptCommand.cs" />
     <Compile Include="System\ArraySlice.cs" />
-    <Compile Include="System\Node\Node.cs" />
+    <Compile Include="DatHandler\IFilePiece.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

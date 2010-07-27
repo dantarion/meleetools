@@ -1,10 +1,8 @@
-﻿using System;
-using MeleeLib.System;
-using MeleeLib.System.Node;
+﻿using MeleeLib.System;
 
 namespace MeleeLib.DatHandler
 {
-    public class FTHeader : ChildNode<File, Header>, IData
+    public class FTHeader :  IData, IFilePiece
     {
         public const int Length = 0x60;
         public uint AttributesStart { get { return RawData.GetUInt32(0x00); } }
@@ -13,30 +11,16 @@ namespace MeleeLib.DatHandler
         public uint SubactionStart { get { return RawData.GetUInt32(0x0C); } }
         public uint Unknown2 { get { return RawData.GetUInt32(0x10); } }
         public uint SubactionEnd { get { return RawData.GetUInt32(0x14); } }
-        public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
+        public AttributesIndex Attributes { get { return new AttributesIndex(File); } }
         public ArraySlice<byte> Values { get { return RawData.Slice(0x18, 18); } }
 
-        public FTHeader(Header parent)
-        {
-            _parent = parent;
-        }
+        public FTHeader(File file) { File = file; }
 
-        private readonly Header _parent;
-
-        public override Header Parent
-        {
-            get { return _parent; }
-        }
-
-
-        public override File Root
-        {
-            get { return Parent.Root; }
-        }
-
+        public File File { get; private set; }
         public ArraySlice<byte> RawData
         {
-            get { return Root.DataSection.Slice((int)Parent.Section1Index[0].DataOffset, Length); }
+            get { return File.DataSection.Slice((int)File.Header.Section1Index[0].DataOffset, Length); }
         }
+
     }
 }

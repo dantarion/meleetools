@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using MeleeLib.System;
-using MeleeLib.System.Node;
 
-namespace MeleeLib.DatHandler
-{
-    public class Header : Node<File>, IData
-    {
+namespace MeleeLib.DatHandler {
+    public class Header : IData, IFilePiece {
         #region TODO
-        //        public readonly FTHeader FTHeader;
-        //        public readonly List<Attribute> Attributes;
-        //        public readonly List<Subaction> Subactions;
         //            //Subactions
         //            fixed (byte* ptr = rawdata)
         //            {
@@ -49,16 +42,13 @@ namespace MeleeLib.DatHandler
         #endregion
         public const int Length = 0x20;
         private Header() { }
-        public Header(File root)
-        {
-            if (root.RawData.Count < Length) throw new IndexOutOfRangeException();
-            _root = root;
+        public Header(File file) {
+            if (file.RawData.Count < Length) throw new IndexOutOfRangeException();
+            File = file;
         }
-        public Section1Index Section1Index { get { return new Section1Index(this); } }
-        public Section2Index Section2Index { get { return new Section2Index(this); } }
-        private readonly File _root;
-        public override File Root { get { return _root; } }
-
+        public Section1Index Section1Index { get { return new Section1Index(File); } }
+        public Section2Index Section2Index { get { return new Section2Index(File); } }
+        public File File { get; private set; }
         public uint Filesize { get { return RawData.GetUInt32(0x00); } }
         public uint Datasize { get { return RawData.GetUInt32(0x04); } }
         public uint OffsetCount { get { return RawData.GetUInt32(0x08); } }
@@ -67,10 +57,8 @@ namespace MeleeLib.DatHandler
         public ArraySlice<byte> Version { get { return RawData.Slice(0x14, 0x4); } }
         public uint Unknown1 { get { return RawData.GetUInt32(0x18); } }
         public uint Unknown2 { get { return RawData.GetUInt32(0x1C); } }
-        public uint StringOffsetBase
-        {
-            get
-            {
+        public uint StringOffsetBase {
+            get {
                 return Datasize
                      + OffsetCount * sizeof(uint)
                      + SectionType1Count * Section1Header.Length
@@ -78,11 +66,7 @@ namespace MeleeLib.DatHandler
             }
         }
 
-        public FTHeader FTHeader { get { return new FTHeader(this); } }
-
-        public ArraySlice<byte> RawData
-        {
-            get { return Root.RawData.Slice(0, Length); }
-        }
+        public FTHeader FTHeader { get { return new FTHeader(File); } }
+        public ArraySlice<byte> RawData { get { return File.RawData.Slice(0, Length); } }
     }
 }

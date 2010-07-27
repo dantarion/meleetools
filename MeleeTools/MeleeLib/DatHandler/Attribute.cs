@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Diagnostics;
 using MeleeLib.System;
-using MeleeLib.System.Node;
-using Microsoft.Contracts;
 
 namespace MeleeLib.DatHandler
 {
 
-    public class Attribute : ChildNode<File, AttributesIndex>, IData
+    public class Attribute : IData, IFilePiece
     {
-        public Attribute(AttributesIndex parent, int index)
-        {
-            _parent = parent;
-            Index = index;
-        }
+        public File File { get; private set; }
+        public readonly int Index;
+        public Attribute(File file, int index) { File = file; Index = index; }
         public string Name
         {
             get
             {
-                switch (Index * 4)
+                switch (Offset)
                 {
                     case 0x000: return "Walk Initial Velocity";
                     case 0x004: return "Walk Acceleration?";
@@ -69,7 +64,7 @@ namespace MeleeLib.DatHandler
         {
             get
             {
-                switch (Index * 4)
+                switch (Offset)
                 {
                     case 0x58:
                     case 0xa4:
@@ -81,7 +76,6 @@ namespace MeleeLib.DatHandler
             }
         }
 
-        public readonly int Index;
         public object Value
         {
             get
@@ -92,20 +86,6 @@ namespace MeleeLib.DatHandler
             }
         }
         public int Offset { get { return Index * 4; } }
-        private readonly AttributesIndex _parent;
-        public override AttributesIndex Parent
-        {
-            get { return _parent; }
-        }
-
-        public override File Root
-        {
-            get { return Parent.Root; }
-        }
-
-        public ArraySlice<byte> RawData
-        {
-            get { return Parent.RawData.Slice(Index * sizeof(float), 0x4); }
-        }
+        public ArraySlice<byte> RawData { get { return File.Header.FTHeader.Attributes.RawData.Slice(Offset, 0x4); } }
     }
 }
