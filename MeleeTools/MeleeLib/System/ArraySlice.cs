@@ -90,7 +90,7 @@ namespace MeleeLib.System
     {
         public static Int32 GetInt32(this ArraySlice<byte> arraySlice, int offset)
         {
-            return BitConverter.ToInt32(arraySlice.Array, arraySlice.Offset + offset)
+            return BitConverter.ToInt32(arraySlice.Array, arraySlice.Offset + offset);
         }
 
         public static UInt32 GetUInt32(this ArraySlice<byte> arraySlice, int offset)
