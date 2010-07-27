@@ -5,7 +5,6 @@ namespace MeleeLib.DatHandler {
     public class SectionType2Header : IData, IFilePiece {
         public const int Length = 0x8;
         public readonly int Index;
-        public SectionType2Data Data { get { return new SectionType2Data(File); } }
         public string Name { get { return File.DataSection.GetAsciiString((int)(File.Header.StringOffsetBase + StringOffset)); } }
         public File File { get; private set; }
         private SectionType2Header() { }
