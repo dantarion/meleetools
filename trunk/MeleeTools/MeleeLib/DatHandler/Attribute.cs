@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using MeleeLib.System;
+using Microsoft.Contracts;
 
 namespace MeleeLib.DatHandler
 {
@@ -62,9 +64,33 @@ namespace MeleeLib.DatHandler
                 return "";
             }
         }
+        public Type Type
+        {
+            get
+            {
+                switch (Index * 4)
+                {
+                    case 0x58:
+                    case 0xa4:
+                    case 0x98:
+                    case 0x16c:
+                        return typeof(int);
+                }
+                return typeof(float);
+            }
+        }
 
         public readonly int Index;
-        public float Value { get { return RawData.GetSingle(0); } }
+        public object Value
+        {
+            get
+            {
+                if (Type == typeof(int)) return RawData.GetInt32();
+                if (Type == typeof(float)) return RawData.GetSingle();
+                throw new ApplicationException(String.Format("Attribute 0x{0:X3} was an invalid type.", Offset));
+            }
+        }
+        public int Offset { get { return Index * 4; } }
         private readonly AttributesIndex _parent;
         public override AttributesIndex Parent
         {

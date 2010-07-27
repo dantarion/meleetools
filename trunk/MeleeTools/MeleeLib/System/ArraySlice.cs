@@ -40,7 +40,7 @@ namespace MeleeLib.System
         }
         public int IndexOf(T value, int startIndex = 0)
         {
-            return global::System.Array.IndexOf(Array, value, Offset + startIndex, Count-startIndex) - Offset;
+            return global::System.Array.IndexOf(Array, value, Offset + startIndex, Count - startIndex) - Offset;
         }
         public int Count { get; private set; }
 
@@ -66,7 +66,8 @@ namespace MeleeLib.System
         {
             return Slice(offset, Count - offset);
         }
-        public ArraySlice<T> Slice(int offset, int count){
+        public ArraySlice<T> Slice(int offset, int count)
+        {
             return new ArraySlice<T>(Array, Offset + offset, count);
         }
     }
@@ -81,7 +82,7 @@ namespace MeleeLib.System
         {
             return Slice(array, offset, array.Length - offset);
         }
-        public static ArraySlice<T> Slice<T>(this T[] array, int offset, int count )
+        public static ArraySlice<T> Slice<T>(this T[] array, int offset, int count)
         {
             return new ArraySlice<T>(array, offset, count);
         }
@@ -89,26 +90,26 @@ namespace MeleeLib.System
     }
     public static class ByteArraySLiceExtension
     {
-        public static Int32 GetInt32(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
+        public static Int32 GetInt32(this ArraySlice<byte> arraySlice, int offset = 0, bool bigEndian = false)
         {
             var value = BitConverter.ToInt32(arraySlice.Array, arraySlice.Offset + offset);
-            return BitConverter.IsLittleEndian && bigEndian ? value :  value.Reverse();
+            return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
         }
 
-        public static UInt32 GetUInt32(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
+        public static UInt32 GetUInt32(this ArraySlice<byte> arraySlice, int offset = 0, bool bigEndian = false)
         {
             var value = BitConverter.ToUInt32(arraySlice.Array, arraySlice.Offset + offset);
             return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
         }
-        public static Single GetSingle(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
+        public static Single GetSingle(this ArraySlice<byte> arraySlice, int offset = 0, bool bigEndian = false)
         {
             var value = BitConverter.ToSingle(arraySlice.Array, arraySlice.Offset + offset);
             return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
         }
-        public static string GetAsciiString(this ArraySlice<byte> arraySlice, int offset)
+        public static string GetAsciiString(this ArraySlice<byte> arraySlice, int offset = 0)
         {
             var endIndex = arraySlice.IndexOf(0, offset);
-            var newSlice = arraySlice.Slice(offset, endIndex-offset);
+            var newSlice = arraySlice.Slice(offset, endIndex - offset);
             return Encoding.UTF7.GetString((newSlice).ToArray());
         }
     }

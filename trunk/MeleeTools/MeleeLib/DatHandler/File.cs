@@ -20,5 +20,9 @@ namespace MeleeLib.DatHandler
             stream.Read(RawData.Array, 0, RawData.Count);
             stream.Close();
         }
+        
+        #region Convenience Properties
+        public AttributesIndex Attributes { get { return Header.FTHeader.Attributes; } }
+        #endregion
     }
 }

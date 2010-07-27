@@ -36,5 +36,5 @@ namespace MeleeLib.DatHandler
         {
             get { return Parent.DataSection.Slice((int)Parent.Section1Index[0].DataOffset, Length); }
         }
-    }
+    }           
 }
