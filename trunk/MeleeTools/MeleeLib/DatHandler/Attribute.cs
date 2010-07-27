@@ -6,6 +6,7 @@ namespace MeleeLib.DatHandler {
     public class Attribute : IData, IFilePiece {
         public File File { get; private set; }
         public readonly int Index;
+        private Attribute() {}
         public Attribute(File file, int index) { File = file; Index = index; }
         public string Name {
             get {

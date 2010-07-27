@@ -41,11 +41,8 @@ namespace MeleeLib.DatHandler {
         //        }
         #endregion
         public const int Length = 0x20;
-        private Header() { }
-        public Header(File file) {
-            if (file.RawData.Count < Length) throw new IndexOutOfRangeException();
-            File = file;
-        }
+        private Header() {}
+        public Header(File file) { File = file; }
         public File File { get; private set; }
         public uint Filesize { get { return RawData.GetUInt32(0x00); } }
         public uint Datasize { get { return RawData.GetUInt32(0x04); } }
@@ -59,8 +56,8 @@ namespace MeleeLib.DatHandler {
             get {
                 return Datasize
                      + OffsetCount * sizeof(uint)
-                     + SectionType1Count * Section1Header.Length
-                     + SectionType2Count * Section2Header.Length;
+                     + SectionType1Count * SectionType1Header.Length
+                     + SectionType2Count * SectionType2Header.Length;
             }
         }
 
