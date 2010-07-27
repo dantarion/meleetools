@@ -17,8 +17,8 @@ namespace MeleeLib.DatHandler
             _parent = parent;
             _index = index;
         }
-        public buint StringOffset { get { return RawData.GetUInt32(0x00); } }
-        public buint DataOffset   { get { return RawData.GetUInt32(0x04); } }
+        public uint StringOffset { get { return RawData.GetUInt32(0x00, true); } }
+        public uint DataOffset   { get { return RawData.GetUInt32(0x04, true); } }
         private readonly Header _parent;
         public override Header Parent
         {
@@ -34,9 +34,6 @@ namespace MeleeLib.DatHandler
         {
             get
             {
-                if ((int)Parent.Datasize    != Parent.Datasize ||
-                    (int)Parent.OffsetCount != Parent.OffsetCount)
-                    throw new IOException();
                 return File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount*4 + _index*8, Length);
             }
         }

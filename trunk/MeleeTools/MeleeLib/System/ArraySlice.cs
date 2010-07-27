@@ -88,14 +88,16 @@ namespace MeleeLib.System
     }
     public static class ByteArraySLiceExtension
     {
-        public static Int32 GetInt32(this ArraySlice<byte> arraySlice, int offset)
+        public static Int32 GetInt32(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
         {
-            return BitConverter.ToInt32(arraySlice.Array, arraySlice.Offset + offset);
+            var value = BitConverter.ToInt32(arraySlice.Array, arraySlice.Offset + offset);
+            return BitConverter.IsLittleEndian && bigEndian ? value :  value.Reverse();
         }
 
-        public static UInt32 GetUInt32(this ArraySlice<byte> arraySlice, int offset)
+        public static UInt32 GetUInt32(this ArraySlice<byte> arraySlice, int offset, bool bigEndian = false)
         {
-            return BitConverter.ToUInt32(arraySlice.Array, arraySlice.Offset + offset);
+            var value = BitConverter.ToUInt32(arraySlice.Array, arraySlice.Offset + offset);
+            return BitConverter.IsLittleEndian && bigEndian ? value : value.Reverse();
         }
         public static string GetAsciiString(this ArraySlice<byte> arraySlice, int offset)
         {

@@ -59,13 +59,13 @@ namespace MeleeLib.DatHandler
         public override File Parent { get { return _parent; } }
         public override File File { get { return Parent; } }
         public uint Filesize { get { return RawData.GetUInt32(0x00); } }
-        public buint Datasize { get { return RawData.GetUInt32(0x04); } }
-        public buint OffsetCount { get { return RawData.GetUInt32(0x08); } }
-        public buint SectionType1Count { get { return RawData.GetUInt32(0x0C); } }
-        public buint SectionType2Count { get { return RawData.GetUInt32(0x10); } }
+        public uint Datasize { get { return RawData.GetUInt32(0x04); } }
+        public uint OffsetCount { get { return RawData.GetUInt32(0x08); } }
+        public uint SectionType1Count { get { return RawData.GetUInt32(0x0C); } }
+        public uint SectionType2Count { get { return RawData.GetUInt32(0x10); } }
         public ArraySlice<byte> Version { get { return RawData.Slice(0x14, 0x4); } }
-        public buint Unknown1 { get { return RawData.GetUInt32(0x18); } }
-        public buint Unknown2 { get { return RawData.GetUInt32(0x1C); } }
+        public uint Unknown1 { get { return RawData.GetUInt32(0x18); } }
+        public uint Unknown2 { get { return RawData.GetUInt32(0x1C); } }
         public uint StringOffsetBase
         {
             get
