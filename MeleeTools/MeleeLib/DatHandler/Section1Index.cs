@@ -7,7 +7,7 @@ namespace MeleeLib.DatHandler
 {
     public class Section1Index : Node<Header>, IEnumerable<Section1Header>
     {
-        protected Section1Index(Header parent)
+        public Section1Index(Header parent)
         {
             _parent = parent;
         }

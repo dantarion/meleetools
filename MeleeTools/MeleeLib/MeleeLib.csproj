@@ -65,7 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attribute.cs" />
+    <Compile Include="DatHandler\Attribute.cs" />
+    <Compile Include="DatHandler\AttributesIndex.cs" />
     <Compile Include="DatHandler\Exceptions.cs" />
     <Compile Include="DatHandler\Header.cs" />
     <Compile Include="DatHandler\Section1Data.cs" />
