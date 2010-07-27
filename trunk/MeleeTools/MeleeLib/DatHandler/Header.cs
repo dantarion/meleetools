@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MeleeLib.System;
 
 namespace MeleeLib.DatHandler
@@ -21,7 +22,7 @@ namespace MeleeLib.DatHandler
                 {
                     var attribute = new Attribute();
                     if (!INT_ATTRIBUTES.Contains(i))
-                        attribute.Value = (float)*(bzfloat*)cur;
+                        attribute.Value = (float)*(bfloat*)cur;
                     else
                         attribute.Value = (uint)*(buint*)cur;
                     attribute.Offset = i;
@@ -53,6 +54,18 @@ namespace MeleeLib.DatHandler
                     cur += 4 * 6;
                 }
             }
+public List<ScriptCommand> readScript(byte* ptr)
+        {
+            var list = new List<ScriptCommand>();
+            ScriptCommand sc = ScriptCommand.Factory(ptr);
+            while (sc.Type != 0)
+            {
+                list.Add(sc);
+                ptr += sc.Length;
+                sc = ScriptCommand.Factory(ptr);
+            }
+            return list;
+        }
         #endregion
         public const int Length = 0x20;
         private Header() { }

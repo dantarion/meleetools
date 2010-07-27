@@ -66,10 +66,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attribute.cs" />
+    <Compile Include="DatHandler\Exceptions.cs" />
     <Compile Include="DatHandler\Header.cs" />
-    <Compile Include="DatHandler\Section1.cs" />
-    <Compile Include="DatHandler\FTHeader.cs" />
+    <Compile Include="DatHandler\Section1Data.cs" />
     <Compile Include="DatHandler\Section1Header.cs" />
+    <Compile Include="DatHandler\FTHeader.cs" />
+    <Compile Include="DatHandler\Section1Index.cs" />
+    <Compile Include="DatHandler\Section2Data.cs" />
+    <Compile Include="DatHandler\Section2Header.cs" />
+    <Compile Include="DatHandler\Section2Index.cs" />
     <Compile Include="DatHandler\SubactionHeader.cs" />
     <Compile Include="DatHandler\Node.cs" />
     <Compile Include="DatHandler\File.cs" />

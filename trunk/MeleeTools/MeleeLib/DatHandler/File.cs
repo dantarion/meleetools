@@ -18,21 +18,6 @@ namespace MeleeLib.DatHandler
             if (stream.Length > int.MaxValue) throw new IOException("File too large.");
             RawData = new byte[(int)stream.Length].Slice();
             Header = new Header(this);
-
-
-
-        }
-        public List<ScriptCommand> readScript(byte* ptr)
-        {
-            var list = new List<ScriptCommand>();
-            ScriptCommand sc = ScriptCommand.Factory(ptr);
-            while (sc.Type != 0)
-            {
-                list.Add(sc);
-                ptr += sc.Length;
-                sc = ScriptCommand.Factory(ptr);
-            }
-            return list;
         }
     }
 }

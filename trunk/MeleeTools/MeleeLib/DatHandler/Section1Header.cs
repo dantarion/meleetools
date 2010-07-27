@@ -1,42 +1,25 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using MeleeLib.System;
 
 namespace MeleeLib.DatHandler
 {
-    public class Section1Header : Node<Header>, IEnumerable<Section1>
+    public class Section1Header : Node<Header>
     {
-        public const int Length = 0x20;
-        protected Section1Header(Header parent)
+        public const int Length = 0x8;
+        public string Name { get { return File.RawData.GetAsciiString((int) (Parent.StringOffsetBase + StringOffset)); } }
+        private readonly int _index;
+        public Section1Data Data { get { return new Section1Data(this); } }
+        public Section1Header(Header parent, int index)
         {
+            if (parent == null) throw new ArgumentNullException("parent");
+            if (parent.SectionType1Count < index) throw new IndexOutOfRangeException();
             _parent = parent;
+            _index = index;
         }
+        public buint StringOffset { get { return RawData.GetUInt32(0x00); } }
+        public buint DataOffset   { get { return RawData.GetUInt32(0x04); } }
         private readonly Header _parent;
-
-
-
-        public uint Count { get { return Parent.SectionType1Count; } }
-        public IEnumerator<Section1> GetEnumerator()
-        {
-            for (var i = 0; i < Count; i++)
-                yield return this[i];
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        public Section1 this[int i]
-        {
-
-            get
-            {
-                if (i > Count) throw new IndexOutOfRangeException();
-                return new Section1(Parent, i);
-            }
-        }
-
         public override Header Parent
         {
             get { return _parent; }
@@ -49,7 +32,13 @@ namespace MeleeLib.DatHandler
 
         public override ArraySlice<byte> RawData
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                if ((int)Parent.Datasize    != Parent.Datasize ||
+                    (int)Parent.OffsetCount != Parent.OffsetCount)
+                    throw new IOException();
+                File.RawData.Slice((int)Parent.Datasize + (int)Parent.OffsetCount*4 + _index*8, Length);
+            }
         }
     }
 }
