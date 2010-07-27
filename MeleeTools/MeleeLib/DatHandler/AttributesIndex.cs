@@ -32,7 +32,7 @@ namespace MeleeLib.DatHandler
         }
         public Attribute this[int i]
         {
-            get {return new Attribute(i*4, RawData.GetInt32(i)); }
+            get {return new Attribute(this, i, RawData.GetInt32(i)); }
         }
     }
 }
