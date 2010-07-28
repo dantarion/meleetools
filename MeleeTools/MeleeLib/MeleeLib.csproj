@@ -71,7 +71,7 @@
   <ItemGroup>
     <Compile Include="DatHandler\Attribute.cs" />
     <Compile Include="DatHandler\AttributesIndex.cs" />
-    <Compile Include="DatHandler\CommandIndex.cs" />
+    <Compile Include="DatHandler\ScriptIndex.cs" />
     <Compile Include="DatHandler\Exceptions.cs" />
     <Compile Include="DatHandler\Header.cs" />
     <Compile Include="DatHandler\DataIndex.cs" />
