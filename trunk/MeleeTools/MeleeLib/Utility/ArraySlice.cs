@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MeleeLib.System
+namespace MeleeLib.Utility
 {
     public class ArraySlice<T> : IEnumerable<T>
     {
@@ -31,7 +30,7 @@ namespace MeleeLib.System
 
         public bool Contains(T item) { return global::System.Array.IndexOf(Array, item) >= 0; }
 
-        public void CopyTo(T[] array, int arrayIndex = 0) { global::System.Array.Copy(Array, Offset, array, arrayIndex, Count); }
+        public void CopyTo(T[] array, int arrayIndex = 0) { System.Array.Copy(Array, Offset, array, arrayIndex, Count); }
         public T[] ToArray()
         {
             T[] array = new T[Count];

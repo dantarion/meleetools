@@ -1,66 +1,75 @@
 ﻿using System;
-using MeleeLib.System;
+using System.Diagnostics;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler {
-    public class Header : IData, IFilePiece {
-        #region TODO
-        //            //Subactions
-        //            fixed (byte* ptr = rawdata)
-        //            {
-        //                byte* cur = FtHeader.SubactionStart + ptr;
-        //                byte* end = FtHeader.SubactionEnd + ptr;
-        //                int i = 0;
-        //                while (cur < end)
-        //                {
-        //                    Subaction s = new Subaction();
-        //                    s.Header = *(SubactionHeader*)(cur);
-        //                    string str = new String((sbyte*)ptr + s.Header.StringOffset);
-        //                    if (str.Contains("ACTION_"))
-        //                        str = str.Substring(str.LastIndexOf("ACTION_") + 7).Replace("_figatree", "");
-        //                    if (str == "")
-        //                        str = "[No name]";
-        //                    s.Name = str;
-        //                    s.Index = i;
-        //                    s.Commands = readScript(ptr + s.Header.ScriptOffset);
-        //                    Subactions.Add(s);
-        //                    i += 1;
-        //                    cur += 4 * 6;
-        //                }
-        //            }
-        //public List<ScriptCommand> readScript(byte* ptr)
-        //        {
-        //            var list = new List<ScriptCommand>();
-        //            ScriptCommand sc = ScriptCommand.Factory(ptr);
-        //            while (sc.Type != 0)
-        //            {
-        //                list.Add(sc);
-        //                ptr += sc.Length;
-        //                sc = ScriptCommand.Factory(ptr);
-        //            }
-        //            return list;
-        //        }
-        #endregion
+    public class Header : IFilePiece {
         public const int Length = 0x20;
-        private Header() {}
-        public Header(File file) { File = file; }
-        public File File { get; private set; }
-        public uint Filesize { get { return RawData.GetUInt32(0x00); } }
-        public uint Datasize { get { return RawData.GetUInt32(0x04); } }
-        public uint OffsetCount { get { return RawData.GetUInt32(0x08); } }
-        public uint SectionType1Count { get { return RawData.GetUInt32(0x0C); } }
-        public uint SectionType2Count { get { return RawData.GetUInt32(0x10); } }
-        public ArraySlice<byte> Version { get { return RawData.Slice(0x14, 0x4); } }
-        public uint Unknown1 { get { return RawData.GetUInt32(0x18); } }
-        public uint Unknown2 { get { return RawData.GetUInt32(0x1C); } }
-        public uint StringOffsetBase {
+        private Header() { }
+        public Header(File file, ArraySlice<byte> rawData) {
+            File              = file;
+            rawData           = rawData.Slice(0, Length);
+            Filesize          = rawData.GetInt32(0x00);
+            Datasize          = rawData.GetInt32(0x04);
+            OffsetCount       = rawData.GetInt32(0x08);
+            SectionType1Count = rawData.GetInt32(0x0C);
+            SectionType2Count = rawData.GetInt32(0x10);
+            Version           = rawData.   Slice(0x14, 0x4).ToArray();
+            Unknown1          = rawData.GetInt32(0x18);
+        }
+
+        public int Filesize {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int Datasize {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int OffsetCount {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int SectionType1Count {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int SectionType2Count {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public byte[] Version {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int Unknown1 {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int Unknown2 {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        public int StringOffsetBase {
             get {
                 return Datasize
-                     + OffsetCount * sizeof(uint)
-                     + SectionType1Count * SectionType1Header.Size
-                     + SectionType2Count * SectionType2Header.Length;
+                       + OffsetCount * sizeof(int)
+                       + SectionType1Count * SectionType1Header.Size
+                       + SectionType2Count * SectionType2Header.Length;
             }
         }
 
-        public ArraySlice<byte> RawData { get { return File.RawData.Slice(0, Length); } }
+        public File File {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
     }
 }
