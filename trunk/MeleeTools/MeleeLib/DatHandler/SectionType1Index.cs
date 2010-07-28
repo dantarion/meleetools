@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MeleeLib.System;
 
 namespace MeleeLib.DatHandler {
-    public class SectionType1Index : LinkedIndex<SectionType1Header> {
+    public class SectionType1Index : DataIndex<SectionType1Header> {
         public sealed override File File { get; protected set; }
 
         public override int Start {

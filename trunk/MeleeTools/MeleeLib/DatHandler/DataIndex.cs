@@ -6,7 +6,7 @@ using System.Text;
 using MeleeLib.System;
 
 namespace MeleeLib.DatHandler {
-    public abstract class LinkedIndex<T>  : IData, IFilePiece, IEnumerable<T>{
+    public abstract class DataIndex<T>  : IData, IFilePiece, IEnumerable<T>{
         public abstract File File { get; protected set; }
         public abstract int Start { get; }
         public abstract int End { get; }

@@ -73,7 +73,7 @@
     <Compile Include="DatHandler\AttributesIndex.cs" />
     <Compile Include="DatHandler\Exceptions.cs" />
     <Compile Include="DatHandler\Header.cs" />
-    <Compile Include="DatHandler\LinkedIndex.cs" />
+    <Compile Include="DatHandler\DataIndex.cs" />
     <Compile Include="DatHandler\SectionType1Header.cs" />
     <Compile Include="DatHandler\FTHeader.cs" />
     <Compile Include="DatHandler\SectionType1Index.cs" />
