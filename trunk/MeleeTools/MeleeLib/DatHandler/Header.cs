@@ -7,8 +7,8 @@ namespace MeleeLib.DatHandler {
         //            //Subactions
         //            fixed (byte* ptr = rawdata)
         //            {
-        //                byte* cur = FTHeader.SubactionStart + ptr;
-        //                byte* end = FTHeader.SubactionEnd + ptr;
+        //                byte* cur = FtHeader.SubactionStart + ptr;
+        //                byte* end = FtHeader.SubactionEnd + ptr;
         //                int i = 0;
         //                while (cur < end)
         //                {
@@ -56,7 +56,7 @@ namespace MeleeLib.DatHandler {
             get {
                 return Datasize
                      + OffsetCount * sizeof(uint)
-                     + SectionType1Count * SectionType1Header.Length
+                     + SectionType1Count * SectionType1Header.Size
                      + SectionType2Count * SectionType2Header.Length;
             }
         }

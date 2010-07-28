@@ -1,11 +1,20 @@
-﻿using MeleeLib.System;
+﻿using System;
+using MeleeLib.System;
 
 namespace MeleeLib.DatHandler {
-    public class SubactionIndex : IData, IFilePiece {
-        public File File { get; private set; }
-        public FTHeader FTHeader { get { return File.FTHeader; } }
+    public class SubactionIndex : LinkedIndex<SubactionHeader> {
+        public override sealed File File { get; protected set; }
+        public override int Start { get { return (int)File.FtHeader.SubactionStart; } }
+        public override int End { get { return (int)File.FtHeader.SubactionEnd; } }
+
+        public override SubactionHeader this[int i] {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override int Count {
+            get { throw new NotImplementedException(); }
+        }
+
         public SubactionIndex(File file) { File = file; }
-        public uint Size { get { return FTHeader.SubactionEnd - FTHeader.SubactionStart; } }
-        public ArraySlice<byte> RawData { get { return File.RawData.Slice((int)FTHeader.SubactionStart, (int)Size); } }
     }
 }
