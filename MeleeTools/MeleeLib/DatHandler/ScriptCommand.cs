@@ -1,7 +1,6 @@
 ﻿namespace MeleeLib.DatHandler
-{/*
-    public class ScriptCommand
-    {
+{
+    public class ScriptCommand {/*
         public static ScriptCommand Factory(ArraySegment<byte> data)
         {
             switch ((uint)data[0] >> 2)
@@ -474,4 +473,5 @@
     }
     public class IncompatibleCommandException : ArgumentException { }
   */
+    }
 }

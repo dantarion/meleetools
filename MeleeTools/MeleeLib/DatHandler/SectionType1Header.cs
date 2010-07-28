@@ -15,6 +15,6 @@ namespace MeleeLib.DatHandler {
         }
         public uint StringOffset { get { return RawData.GetUInt32(0x04); } }
         public uint DataOffset { get { return RawData.GetUInt32(0x00); } }
-        public ArraySlice<byte> RawData { get { return File.SectionType1Index.RawData.Slice(Index * 8, Size); } }
+        public ArraySlice<byte> RawData { get { return File.SectionType1Index.RawData.Slice(Index *Size, Size); } }
     }
 }
