@@ -18,7 +18,7 @@ namespace MeleeLib.DatHandler {
             stream.Read(RawData.Array, 0, RawData.Count);
             stream.Close();
         }
-        public FTHeader FTHeader { get { return new FTHeader(this); } }
+        public FtHeader FtHeader { get { return new FtHeader(this); } }
         public AttributesIndex Attributes { get { return new AttributesIndex(this); } }
         public ArraySlice<byte> RawData { get; private set; }
         public SectionType1Index SectionType1Index { get { return new SectionType1Index(this); } }

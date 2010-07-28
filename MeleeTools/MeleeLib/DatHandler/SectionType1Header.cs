@@ -3,7 +3,7 @@ using MeleeLib.System;
 
 namespace MeleeLib.DatHandler {
     public class SectionType1Header : IData, IFilePiece {
-        public const int Length = 0x8;
+        public const int Size = 0x8;
         public readonly int Index;
         public string Name { get { return File.DataSection.GetAsciiString((int)(File.Header.StringOffsetBase + StringOffset)); } }
         public File File { get; private set; }
@@ -15,6 +15,6 @@ namespace MeleeLib.DatHandler {
         }
         public uint StringOffset { get { return RawData.GetUInt32(0x04); } }
         public uint DataOffset { get { return RawData.GetUInt32(0x00); } }
-        public ArraySlice<byte> RawData { get { return File.SectionType1Index.RawData.Slice(Index * 8, Length); } }
+        public ArraySlice<byte> RawData { get { return File.SectionType1Index.RawData.Slice(Index * 8, Size); } }
     }
 }

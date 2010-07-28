@@ -12,8 +12,13 @@ namespace MeleeLib.DatHandler
         public uint ScriptOffset { get { return RawData.GetUInt32(0x08); } }
         public uint Unknown3     { get { return RawData.GetUInt32(0x04); } }
         public uint Unknown4     { get { return RawData.GetUInt32(0x00); } }
-        public uint Size { get { return File.FTHeader.SubactionEnd - File.FTHeader.SubactionStart; } }
-        public ArraySlice<byte> RawData { get { return File.DataSection.Slice((int)File.FTHeader.SubactionStart, (int)Size); }
+        public uint Size { get { return File.FtHeader.SubactionEnd - File.FtHeader.SubactionStart; } }
+        public ArraySlice<byte> RawData { get { return File.DataSection.Slice((int)File.FtHeader.SubactionStart, (int)Size); }
+        #region TODO
+        //Commands
+        //Name
+            //Index
+        #endregion
         }
     }
 }
