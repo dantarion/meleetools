@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using MeleeLib.System;
-
+//TODO: Before edit functionality is added, everything needs to be initialized to members rather than read directly from the byte array every time.
 namespace MeleeLib.DatHandler {
     public class File : IData {
         public readonly String Filename;
@@ -23,5 +23,6 @@ namespace MeleeLib.DatHandler {
         public ArraySlice<byte> RawData { get; private set; }
         public SectionType1Index SectionType1Index { get { return new SectionType1Index(this); } }
         public SectionType2Index SectionType2Index { get { return new SectionType2Index(this); } }
+        public SubactionIndex SubactionIndex { get { return new SubactionIndex(this); } }
     }
 }
