@@ -1,5 +1,5 @@
 ﻿using System;
-using MeleeLib.System;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler {
     public class SectionType2Header : IData, IFilePiece {

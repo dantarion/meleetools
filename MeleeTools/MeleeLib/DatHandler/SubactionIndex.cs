@@ -1,5 +1,5 @@
 ﻿using System;
-using MeleeLib.System;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler {
     public class SubactionIndex : DataIndex<Subaction> {
@@ -49,7 +49,7 @@ namespace MeleeLib.DatHandler {
             get { throw new NotImplementedException(); }
         }
 
-        public SubactionIndex(File file) { File = file; }
+        public SubactionIndex(File file, ArraySlice<byte> rawData) { File = file; }
         private SubactionIndex() { }
     }
 }

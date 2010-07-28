@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MeleeLib.System
+﻿namespace MeleeLib.Utility
 {
     public interface IData {
          ArraySlice<byte> RawData { get;  }

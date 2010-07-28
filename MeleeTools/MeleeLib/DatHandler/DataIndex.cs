@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MeleeLib.System;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler {
-    public abstract class DataIndex<T>  : IData, IFilePiece, IEnumerable<T>, IList<T>{
+    public abstract class DataIndex<T>  : IData, IFilePiece, IList<T>{
         public abstract File File { get; protected set; }
         public abstract int Start { get; }
         public abstract int End { get; }

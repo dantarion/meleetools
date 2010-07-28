@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using MeleeLib.System;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler
 {
@@ -8,7 +8,7 @@ namespace MeleeLib.DatHandler
     {
         public File File { get; private set; }
         private AttributesIndex() {}
-        public AttributesIndex(File file) { File = file; }
+        public AttributesIndex(File file, ArraySlice<byte> rawData) { File = file; }
         public uint Size { get { return File.FtHeader.AttributesEnd - File.FtHeader.AttributesStart; } }
         public uint Count { get { return Size / 4; } }
         public ArraySlice<byte> RawData { get { return File.DataSection.Slice((int)File.FtHeader.AttributesStart, (int)Size); } }

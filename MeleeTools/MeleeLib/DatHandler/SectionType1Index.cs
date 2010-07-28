@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using MeleeLib.System;
+using MeleeLib.Utility;
 
 namespace MeleeLib.DatHandler {
     public class SectionType1Index : DataIndex<SectionType1Header> {
@@ -15,7 +15,7 @@ namespace MeleeLib.DatHandler {
             get { return Start + SectionType1Header.Size * Count; }
         }
 
-        public SectionType1Index(File file) {
+        public SectionType1Index(File file, ArraySlice<byte> rawData) {
             File = file;
         }
         #region Not Implemented

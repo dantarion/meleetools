@@ -1,7 +1,15 @@
-﻿namespace MeleeLib.DatHandler
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using System.ComponentModel;
+using MeleeLib.Utility;
+
+namespace MeleeLib.DatHandler
 {
-    public class ScriptCommand {/*
-        public static ScriptCommand Factory(ArraySegment<byte> data)
+    public class ScriptCommand {
+        public static ScriptCommand Factory(ArraySlice<byte> data) 
         {
             switch ((uint)data[0] >> 2)
             {
@@ -44,7 +52,7 @@
         protected const string DisplayFormat = "{0} [{1}]";
         protected const string DisplayDelimiter = " ";
 
-        [CategoryAttribute("Name")]
+        [Category("Name")]
         public string DisplayName
         {
             get { return DisplayParams == null ? Name : String.Format(DisplayFormat, Name, String.Join(DisplayDelimiter, DisplayParams)); }
@@ -55,9 +63,9 @@
             : this(data, null, length) { }
         protected ScriptCommand(byte[] data, string name)
             : this(data, name, 0x4) { }
-        protected ScriptCommand(ArraySegment<byte> data, string name, uint length)
+        protected ScriptCommand(ArraySlice<byte> data, string name, uint length)
         {
-         //   Data = new ArraySegment<
+         //   Data = new ArraySlice<
             Array.Copy(data.Array, data.Offset, Data, 0, Length);
             Name = name;
             Length = length;
@@ -100,13 +108,9 @@
                 return sb.ToString();
             }
         }
-        protected ArraySegment<byte> Data;
+        protected ArraySlice<byte> Data;
         
 
-    }
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ParamAttribute : System.Attribute
-    {
     }
 
     public class UnsolvedCommand : ScriptCommand
@@ -472,6 +476,5 @@
         byte[] ParameterData { get; }
     }
     public class IncompatibleCommandException : ArgumentException { }
-  */
-    }
+    
 }
