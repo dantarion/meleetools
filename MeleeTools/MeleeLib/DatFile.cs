@@ -91,8 +91,8 @@ namespace MeleeLib
             //Subactions
             fixed (byte* ptr = rawdata)
             {
-                byte* cur = ftheader.SubactionStart + ptr;
-                byte* end = ftheader.SubactionEnd + ptr;
+                byte* cur = ftheader.SubactionStartOffset + ptr;
+                byte* end = ftheader.SubactionEndOffset + ptr;
                 int i = 0;
                 while (cur < end)
                 {

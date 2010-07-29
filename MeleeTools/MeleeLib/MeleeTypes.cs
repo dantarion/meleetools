@@ -36,8 +36,8 @@ namespace MeleeLib
     {
         public uint AttributesOffset { get { return attributesoffset; } }
         public uint AttributesOffset2 { get { return attributesoffset2; } }
-        public uint SubactionStart { get { return subactionstart; } }
-        public uint SubactionEnd { get { return subactionend; } }
+        public uint SubactionStartOffset { get { return subactionstart; } }
+        public uint SubactionEndOffset { get { return subactionend; } }
         public buint attributesoffset;
         public buint attributesoffset2;
         private buint unknown1;
@@ -50,6 +50,10 @@ namespace MeleeLib
     {
         public uint StringOffset { get { return stringoffset; } set { stringoffset = value; } }
         public uint ScriptOffset { get { return scriptOffset; } set { scriptOffset = value; } }
+        public uint Unknown1Offset { get { return unknown1; } set { unknown1 = value; } }
+        public uint Unknown2Offset { get { return unknown2; } set { unknown2 = value; } }
+        public uint Unknown3Flags{ get { return unknown3; } set { unknown3 = value; } }
+        public uint Unknown4Offset { get { return unknown4; } set { unknown4 = value; } }
         private buint stringoffset;
         private buint unknown1;
         private buint unknown2;

@@ -31,7 +31,11 @@
             <TabItem Header="Subactions">
                 <DockPanel>
                     <ListBox Width="150" DockPanel.Dock="Left" DisplayMemberPath="Name" Name="Subactions" ItemsSource="{Binding Path=Subactions}" IsSynchronizedWithCurrentItem="True" />
-                    <ListBox Width="290" DockPanel.Dock="Left" DisplayMemberPath="DisplayName" Name="SelectedSubaction" DataContext="{Binding Path=Subactions}" ItemsSource="{Binding ElementName=Subactions,Path=Items/Commands}" IsSynchronizedWithCurrentItem="True" />
+                    <DockPanel>
+                        <wpg:PropertyGrid DockPanel.Dock="Top" Instance="{Binding ElementName=Subactions,Path=Items/Header}" AutomaticlyExpandObjects="True" />
+                        <Label DockPanel.Dock="Top">Commands:</Label>
+                        <ListBox Width="290" Margin="5"  DockPanel.Dock="Left" DisplayMemberPath="DisplayName" Name="SelectedSubaction" DataContext="{Binding Path=Subactions}" ItemsSource="{Binding ElementName=Subactions,Path=Items/Commands}" IsSynchronizedWithCurrentItem="True" />
+                    </DockPanel>
                     <wpg:PropertyGrid Instance="{Binding ElementName=SelectedSubaction,Path=SelectedItem}" AutomaticlyExpandObjects="True" />
                 </DockPanel>
             </TabItem>
