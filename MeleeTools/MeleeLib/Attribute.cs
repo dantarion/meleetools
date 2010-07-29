@@ -1,16 +1,19 @@
 ﻿using System;
-using MeleeLib.Utility;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace MeleeLib.DatHandler {
+namespace MeleeLib
+{
 
-    public class Attribute : IData, IFilePiece {
-        public File File { get; private set; }
-        public readonly int Index;
-        private Attribute() {}
-        public Attribute(File file, int index) { File = file; Index = index; }
-        public string Name {
-            get {
-                switch (Offset) {
+    public struct Attribute
+    {
+        public string Name
+        {
+            get
+            {
+                switch (_offset)
+                {
                     case 0x000: return "Walk Initial Velocity";
                     case 0x004: return "Walk Acceleration?";
                     case 0x008: return "Walk Maximum Velocity";
@@ -56,32 +59,8 @@ namespace MeleeLib.DatHandler {
                 return "";
             }
         }
-        public Type Type {
-            get {
-                switch (Offset) {
-                    case 0x58:
-                    case 0xa4:
-                    case 0x98:
-                    case 0x16c:
-                        return typeof(int);
-                }
-                return typeof(float);
-            }
-        }
-
-        public object Value {
-            get {
-                if (Type == typeof(int)) return RawData.GetInt32();
-                if (Type == typeof(float)) return RawData.GetSingle();
-                throw new ApplicationException(String.Format("Attribute 0x{0:X3} was an invalid type.", Offset));
-            }
-        }
-        public new string ToString {
-            get {
-                return String.Format("{3} 0x{0:X4} {1,-30} = {2}", Offset, Name, Value, Type == typeof(int) ? "*" : " ");
-            }
-        }
-        public int Offset { get { return Index * 4; } }
-        public ArraySlice<byte> RawData { get { return File.Attributes.RawData.Slice(Offset, 0x4); } }
+        private int _offset;
+        public int Offset { get { return _offset; } set { _offset = value; } }
+        public object Value { get; set; }
     }
 }
