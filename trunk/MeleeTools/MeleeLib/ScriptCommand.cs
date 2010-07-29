@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.ComponentModel;
-using MeleeLib.Utility;
-
-namespace MeleeLib.DatHandler
+namespace MeleeLib
 {
-    public class ScriptCommand {
-        public static ScriptCommand Factory(ArraySlice<byte> data) 
+    public unsafe class ScriptCommand
+    {
+        public static ScriptCommand Factory(byte* data)
         {
             switch ((uint)data[0] >> 2)
             {
@@ -52,21 +51,20 @@ namespace MeleeLib.DatHandler
         protected const string DisplayFormat = "{0} [{1}]";
         protected const string DisplayDelimiter = " ";
 
-        [Category("Name")]
+        [CategoryAttribute("Name")]
         public string DisplayName
         {
             get { return DisplayParams == null ? Name : String.Format(DisplayFormat, Name, String.Join(DisplayDelimiter, DisplayParams)); }
         }
-        protected ScriptCommand(byte[] data)
-            : this(data, null, 0x4) { }
-        protected ScriptCommand(byte[] data, uint length)
-            : this(data, null, length) { }
-        protected ScriptCommand(byte[] data, string name)
-            : this(data, name, 0x4) { }
-        protected ScriptCommand(ArraySlice<byte> data, string name, uint length)
+        protected ScriptCommand(byte* dataptr)
+            : this(dataptr, null, 0x4) { }
+        protected ScriptCommand(byte* ptr, uint length)
+            : this(ptr, null, length) { }
+        protected ScriptCommand(byte* dataptr, string name)
+            : this(dataptr, name, 0x4) { }
+        protected ScriptCommand(byte* dataptr, string name, uint length)
         {
-         //   Data = new ArraySlice<
-            Array.Copy(data.Array, data.Offset, Data, 0, Length);
+            Data = dataptr;
             Name = name;
             Length = length;
         }
@@ -102,18 +100,21 @@ namespace MeleeLib.DatHandler
                 var sb = new StringBuilder();
                 for (int i = 0; i < Length; i++)
                 {
-                    Data.
                     sb.AppendFormat("{0:X2} ", Data[i]);
                 }
                 return sb.ToString();
             }
         }
-        protected ArraySlice<byte> Data;
-        
+        protected byte* Data;
+
 
     }
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ParamAttribute : System.Attribute
+    {
+    }
 
-    public class UnsolvedCommand : ScriptCommand
+    public unsafe class UnsolvedCommand : ScriptCommand
     {
         public UnsolvedCommand(byte* ptr)
             : base(ptr) { }
@@ -129,7 +130,7 @@ namespace MeleeLib.DatHandler
             get { return null; }
         }
     }
-    public class BodyStateCommand : ScriptCommand
+    public unsafe class BodyStateCommand : ScriptCommand
     {
         public BodyStateCommand(byte* dataptr)
             : base(dataptr) { }
@@ -154,7 +155,7 @@ namespace MeleeLib.DatHandler
             get { return (BodyTypes)(*(Data + 3) & 0x3); }
         }
     }
-    public class PartialBodyStateCommand : BodyStateCommand
+    public unsafe class PartialBodyStateCommand : BodyStateCommand
     {
         public PartialBodyStateCommand(byte* dataptr)
             : base(dataptr)
@@ -173,13 +174,16 @@ namespace MeleeLib.DatHandler
             get { return (ushort)(*(bushort*)(Data) & 0x7F); }
         }
     }
-    public class TimerCommand : ScriptCommand
+    public unsafe class TimerCommand : ScriptCommand
     {
-        public TimerCommand(byte[] data)
-            : base(data) { }
+        public TimerCommand(byte* ptr)
+            : base(ptr)
+        {
 
-        public TimerCommand(byte[] data, string name)
-            : base(data, name)
+        }
+
+        public TimerCommand(byte* ptr, string name)
+            : base(ptr, name)
         {
         }
 
@@ -195,7 +199,7 @@ namespace MeleeLib.DatHandler
             get { return *(bushort*)(Data + 2); }
         }
     }
-    public class HitboxCommand : CollisionCommand
+    public unsafe class HitboxCommand : CollisionCommand
     {
         public HitboxCommand(byte* ptr)
             : base(ptr, "Hitbox", 0x14) { }
@@ -291,32 +295,8 @@ namespace MeleeLib.DatHandler
             get { return new string[] { ID.ToString() }; }
         }
 
-        public override int Damage
-        {
-            get { return *(bushort*)(Data + 2) >> 0 & 0x1FF; }
-        }
-
-        public override int KnockbackGrowth
-        {
-            get { return *(bushort*)(Data + 13) >> 6 & 0x1FF; }
-        }
-
-        public override int WeightDependantKnockback
-        {
-            get { return *(short*)(Data + 14) >> 5 & 0x1FF; }
-        }
-
-        public override ElementType Element
-        {
-            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
-        }
-
-        public override int Angle
-        {
-            get { return *(bushort*)(Data + 12) >> 7 & 0xFFFF; }
-        }
     }
-    public class VisibilityCommand : ScriptCommand
+    public unsafe class VisibilityCommand : ScriptCommand
     {
         public VisibilityCommand(byte* dataptr)
             : base(dataptr)
@@ -338,7 +318,7 @@ namespace MeleeLib.DatHandler
             get { return new[] { Visibility.ToString() }; }
         }
     }
-    public abstract class CollisionCommand : ScriptCommand
+    public unsafe abstract class CollisionCommand : ScriptCommand
     {
         protected CollisionCommand(byte* dataptr) : base(dataptr) { }
         protected CollisionCommand(byte* dataptr, uint length) : base(dataptr, length) { }
@@ -363,24 +343,33 @@ namespace MeleeLib.DatHandler
             PoisonFlower = 0x3C,
             Nothing = 0x40
         }
-
         [CategoryAttribute("Stats")]
-        public abstract int Damage { get; }
-
+        public int Damage
+        {
+            get { return *(bushort*)(Data + 2) >> 0 & 0x1FF; }
+        }
         [CategoryAttribute("Stats")]
-        public abstract int KnockbackGrowth { get; }
-
+        public int KnockbackGrowth
+        {
+            get { return *(bushort*)(Data + 13) >> 6 & 0x1FF; }
+        }
         [CategoryAttribute("Stats")]
-        public abstract int WeightDependantKnockback { get; }
-
+        public int WeightDependantKnockback
+        {
+            get { return *(bushort*)(Data + 14) >> 5 & 0x1FF; }
+        }
         [CategoryAttribute("Cosmetic")]
-        public abstract ElementType Element { get; }
-
+        public ElementType Element
+        {
+            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
+        }
         [CategoryAttribute("Stats")]
-        public abstract int Angle { get; }
-
+        public int Angle
+        {
+            get { return *(bushort*)(Data + 12) >> 7 & 0xFFFF; }
+        }
     }
-    public class ThrowCommand : CollisionCommand
+    public unsafe class ThrowCommand : CollisionCommand
     {
         public ThrowCommand(byte* dataptr)
             : base(dataptr, "Throw", 0xc) { }
@@ -398,33 +387,8 @@ namespace MeleeLib.DatHandler
         {
             get { return new string[] { ThrowType.ToString() }; }
         }
-
-        public override int Damage
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override int KnockbackGrowth
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override int WeightDependantKnockback
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override ElementType Element
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override int Angle
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
-    public class StartLoopCommand : ScriptCommand
+    public unsafe class StartLoopCommand : ScriptCommand
     {
         public StartLoopCommand(byte* dataptr)
             : base(dataptr)
@@ -447,7 +411,7 @@ namespace MeleeLib.DatHandler
             get { return *(bushort*)(Data + 2); }
         }
     }
-    public class PointerCommand : ScriptCommand
+    public unsafe class PointerCommand : ScriptCommand
     {
 
         public PointerCommand(byte* dataptr)
@@ -476,5 +440,4 @@ namespace MeleeLib.DatHandler
         byte[] ParameterData { get; }
     }
     public class IncompatibleCommandException : ArgumentException { }
-    
 }
