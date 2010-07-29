@@ -294,6 +294,26 @@ namespace MeleeLib
         {
             get { return new string[] { ID.ToString() }; }
         }
+        [CategoryAttribute("Stats")]
+        public int Damage {
+            get { return *(bushort*)(Data + 2) >> 0 & 0x1FF; }
+        }
+        [CategoryAttribute("Stats")]
+        public int KnockbackGrowth {
+            get { return *(bushort*)(Data + 13) >> 6 & 0x1FF; }
+        }
+        [CategoryAttribute("Stats")]
+        public int WeightDependantKnockback {
+            get { return *(bushort*)(Data + 14) >> 5 & 0x1FF; }
+        }
+        [CategoryAttribute("Cosmetic")]
+        public ElementType Element {
+            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
+        }
+        [CategoryAttribute("Stats")]
+        public int Angle {
+            get { return *(bushort*)(Data + 12) >> 7 & 0xFFFF; }
+        }
 
     }
     public unsafe class VisibilityCommand : ScriptCommand
@@ -325,7 +345,7 @@ namespace MeleeLib
         protected CollisionCommand(byte* dataptr, string name, uint length) : base(dataptr, name, length) { }
 
         public enum ElementType
-        {
+        {   
             Normal = 0x00,
             Fire = 0x04,
             Electric = 0x08,
@@ -343,31 +363,6 @@ namespace MeleeLib
             PoisonFlower = 0x3C,
             Nothing = 0x40
         }
-        [CategoryAttribute("Stats")]
-        public int Damage
-        {
-            get { return *(bushort*)(Data + 2) >> 0 & 0x1FF; }
-        }
-        [CategoryAttribute("Stats")]
-        public int KnockbackGrowth
-        {
-            get { return *(bushort*)(Data + 13) >> 6 & 0x1FF; }
-        }
-        [CategoryAttribute("Stats")]
-        public int WeightDependantKnockback
-        {
-            get { return *(bushort*)(Data + 14) >> 5 & 0x1FF; }
-        }
-        [CategoryAttribute("Cosmetic")]
-        public ElementType Element
-        {
-            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
-        }
-        [CategoryAttribute("Stats")]
-        public int Angle
-        {
-            get { return *(bushort*)(Data + 12) >> 7 & 0xFFFF; }
-        }
     }
     public unsafe class ThrowCommand : CollisionCommand
     {
@@ -380,12 +375,36 @@ namespace MeleeLib
         }
         public ThrowTypes ThrowType
         {
-            get { return (ThrowTypes)(*(bushort*)(Data) >> 7 & 0x1); }
+            get { return (ThrowTypes)(*(bushort*)(Data) >> 7 & 0x7); }
         }
 
         protected override string[] DisplayParams
         {
             get { return new string[] { ThrowType.ToString() }; }
+        }
+        [CategoryAttribute("Stats")]
+        public int Damage {
+            get { return *(bushort*)(Data + 1) >> 0 & 0x1FF; }
+        }
+        [CategoryAttribute("Stats")]
+        public int KnockbackGrowth {
+            get { return *(bushort*)(Data + 5) >> 6 & 0x1FF; }
+        }
+        [CategoryAttribute("Stats")]
+        public int WeightDependantKnockback {
+            get { return *(bushort*)(Data + 6) >> 5 & 0x1FF; }
+        }
+        [CategoryAttribute("Cosmetic")]
+        public ElementType Element {
+            get { return (ElementType)(*(bushort*)(Data + 17) >> 2 & 0x1F); }
+        }
+        [CategoryAttribute("Stats")]
+        public int Angle {
+            get { return *(bushort*)(Data + 4) >> 7 & 0x1FF; }
+        }
+        [CategoryAttribute("Stats")]
+        public int BaseKnockback {
+            get { return *(bushort*)(Data + 9) >> 3 & 0xF; }
         }
     }
     public unsafe class StartLoopCommand : ScriptCommand
