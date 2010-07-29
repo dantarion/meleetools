@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,6 +24,7 @@ namespace MasterHand
         public Window1()
         {
             InitializeComponent();
+            this.Title += " "+Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
         static void prettyPrint(object o, StringBuilder sb)
         {
@@ -32,6 +34,8 @@ namespace MasterHand
                 
                 if (pi.Name.Contains("Offset") && !pi.Name.Contains("Count"))
                     sb.AppendFormat("<tr><td>{0:6}</td><td>@0x{1:X8}</td></tr>\n", pi.Name, pi.GetValue(o, null));
+                else  if (pi.Name.Contains("Flags"))
+                    sb.AppendFormat("<tr><td>{0:6}</td><td>{1:032}</td></tr>\n", pi.Name, Convert.ToString((uint)pi.GetValue(o, null),2));
                 else
                     sb.AppendFormat("<tr><td>{0:6}</td><td>{1}</td></tr>\n", pi.Name, pi.GetValue(o, null));
                 
@@ -67,6 +71,11 @@ namespace MasterHand
                 sb.AppendFormat("<tr><td>0x{0:X3}</td><td>{1}</td></tr>\n", a.Offset, a.Value);
             }
             sb.AppendLine("</table>");
+            sb.AppendFormat(H2, "Subaction Headers");
+            foreach(MeleeLib.Subaction s in dat.Subactions)
+            {
+                prettyPrint(s.Header, sb);
+            }
             Overview.NavigateToString(sb.ToString());
         }
         private void MenuItem_Click(object sender, RoutedEventArgs e)

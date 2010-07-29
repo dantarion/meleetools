@@ -34,7 +34,7 @@ namespace MeleeLib
                 case 0x19: return new VisibilityCommand(data);
                 case 0x1a: return new BodyStateCommand(data, "Body State 1");
                 case 0x1b: return new BodyStateCommand(data, "Body State 2");
-                case 0x1c: return new PartialBodyStateCommand(data);
+                case 0x1c: return new PartialBodyStateCommand(data,"Bone State");
 
                 case 0x1f: return new UnsolvedCommand(data, "Model Mod");
 
@@ -157,8 +157,8 @@ namespace MeleeLib
     }
     public unsafe class PartialBodyStateCommand : BodyStateCommand
     {
-        public PartialBodyStateCommand(byte* dataptr)
-            : base(dataptr)
+        public PartialBodyStateCommand(byte* dataptr, string s)
+            : base(dataptr, s)
         {
         }
         protected override string[] DisplayParams

@@ -38,7 +38,7 @@ namespace MeleeLib
                     case 0x064: return "Aerial Mobility";
                     case 0x068: return "Aerial Stopping Mobility";
                     case 0x06C: return "Max Aerial H Velocity";
-                    case 0x070: return "same as 0x088?";
+                    case 0x070: return "Fast Fall Gravity?";
                     case 0x074: return "Fast Fall Terminal Velocity";
                     case 0x078: return "0024?";
                     case 0x088: return "Weight";
@@ -47,12 +47,14 @@ namespace MeleeLib
                     case 0x094: return "Shield Break Initial Velocity";
                     case 0x0A8: return "Ledgejump Horizontal Velocity";
                     case 0x0AC: return "Ledgejump Vertical Velocity";
-                    case 0x0DC: return "Normal Landing Lag";
-                    case 0x0E0: return "N-Air Landing Lag";
+                    case 0x0E4: return "Normal Landing Lag";
+                    case 0x0E8: return "N-Air Landing Lag";
                     case 0x0EC: return "F-Air Landing Lag";
                     case 0x0F0: return "B-Air Landing Lag";
-                    case 0x0F4: return "D-Air Landing Lag";
-                    case 0x0F8: return "U-Air Landing Lag";
+                    case 0x0F4: return "U-Air Landing Lag";
+                    case 0x0F8: return "D-Air Landing Lag";
+                    case 0x104: return "Walljump H Velocity?";
+                    case 0x108: return "Walljump V Velocity?";
                     case 0x160: return "Ice Traction?";
                     case 0x17C: return "Special Jump Action = -1...?";
                 }
