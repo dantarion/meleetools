@@ -12,7 +12,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Reflection;
 using MeleeLib;
-using MeleeLib.DatHandler;
 
 namespace MasterHand
 {
@@ -39,7 +38,7 @@ namespace MasterHand
             }
             sb.AppendLine("</table>");
         }
-        private void HTML_Output(File dat)
+        private void HTML_Output(DatFile dat)
         {
             string H1 = "<h1>{0}</h1>";
             string H2 = "<h2>{0}</h2>";
@@ -75,7 +74,7 @@ namespace MasterHand
             var dialog = new Microsoft.Win32.OpenFileDialog();
             if (!dialog.ShowDialog().Value)
                 return;
-            var datfile = new File(dialog.FileName);
+            var datfile = new DatFile(dialog.FileName);
             DataContext = datfile;
             var list = new List<SectionHeader>();
 
