@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeleeLib", "MeleeLib\MeleeLib.csproj", "{152F4981-D0DA-41EC-B606-90AA3C1E06F1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterHand", "MasterHand\MasterHand.csproj", "{01DEFCB4-43E3-49C5-94B5-044BEC1713E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBed", "TestBed\TestBed.csproj", "{C6A2CA29-C337-47E4-A8D3-253155BEF0D6}"
 EndProject
@@ -17,11 +15,8 @@ Global
 		{152F4981-D0DA-41EC-B606-90AA3C1E06F1}.Debug|x86.Build.0 = Debug|x86
 		{152F4981-D0DA-41EC-B606-90AA3C1E06F1}.Release|x86.ActiveCfg = Release|x86
 		{152F4981-D0DA-41EC-B606-90AA3C1E06F1}.Release|x86.Build.0 = Release|x86
-		{01DEFCB4-43E3-49C5-94B5-044BEC1713E6}.Debug|x86.ActiveCfg = Debug|x86
-		{01DEFCB4-43E3-49C5-94B5-044BEC1713E6}.Debug|x86.Build.0 = Debug|x86
-		{01DEFCB4-43E3-49C5-94B5-044BEC1713E6}.Release|x86.ActiveCfg = Release|x86
-		{01DEFCB4-43E3-49C5-94B5-044BEC1713E6}.Release|x86.Build.0 = Release|x86
 		{C6A2CA29-C337-47E4-A8D3-253155BEF0D6}.Debug|x86.ActiveCfg = Debug|x86
+		{C6A2CA29-C337-47E4-A8D3-253155BEF0D6}.Debug|x86.Build.0 = Debug|x86
 		{C6A2CA29-C337-47E4-A8D3-253155BEF0D6}.Release|x86.ActiveCfg = Release|x86
 		{C6A2CA29-C337-47E4-A8D3-253155BEF0D6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
